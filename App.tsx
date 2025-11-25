@@ -4,7 +4,7 @@ import { TimeSlotData, Tool, TIME_SLOTS_COUNT } from './types';
 import { INITIAL_CATEGORIES, formatTime } from './constants';
 
 // Hooks
-import { useSessionStorage } from './hooks/useSessionStorage';
+import { useLocalStorage } from './hooks/useLocalStorage';
 import { useCurrentTime } from './hooks/useCurrentTime';
 import { useNotifications } from './hooks/useNotifications';
 import { useDragAndDrop } from './hooks/useDragAndDrop';
@@ -36,9 +36,9 @@ export default function App() {
   const { theme } = useTheme();
   
   // --- State Management with Custom Hooks ---
-  const [categories, setCategories] = useSessionStorage(STORAGE_KEYS.CATEGORIES, INITIAL_CATEGORIES);
-  const [todos, setTodos] = useSessionStorage(STORAGE_KEYS.TODOS, []);
-  const [grid, setGrid] = useSessionStorage(STORAGE_KEYS.GRID, 
+  const [categories, setCategories] = useLocalStorage(STORAGE_KEYS.CATEGORIES, INITIAL_CATEGORIES);
+  const [todos, setTodos] = useLocalStorage(STORAGE_KEYS.TODOS, []);
+  const [grid, setGrid] = useLocalStorage(STORAGE_KEYS.GRID, 
     Array.from({ length: TIME_SLOTS_COUNT }).map((_, i) => ({
       index: i,
       timeLabel: formatTime(i),

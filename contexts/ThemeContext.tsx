@@ -18,14 +18,14 @@ interface ThemeProviderProps {
 
 export function ThemeProvider({ children }: ThemeProviderProps) {
   const [themeId, setThemeId] = useState<string>(() => {
-    const stored = sessionStorage.getItem(THEME_STORAGE_KEY);
+    const stored = localStorage.getItem(THEME_STORAGE_KEY);
     return stored && themes[stored] ? stored : defaultThemeId;
   });
 
   const theme = themes[themeId];
 
   useEffect(() => {
-    sessionStorage.setItem(THEME_STORAGE_KEY, themeId);
+    localStorage.setItem(THEME_STORAGE_KEY, themeId);
     
     const root = document.documentElement;
     const body = document.body;
@@ -100,6 +100,20 @@ export function ThemeProvider({ children }: ThemeProviderProps) {
   };
 
   const availableThemes = Object.values(themes);
+
+  // Listen for theme changes from other tabs
+  useEffect(() => {
+    const handleStorageChange = (e: StorageEvent) => {
+      if (e.key === THEME_STORAGE_KEY && e.newValue) {
+        if (themes[e.newValue]) {
+          setThemeId(e.newValue);
+        }
+      }
+    };
+
+    window.addEventListener('storage', handleStorageChange);
+    return () => window.removeEventListener('storage', handleStorageChange);
+  }, []);
 
   return (
     <ThemeContext.Provider value={{ theme, themeId, setTheme, availableThemes }}>
