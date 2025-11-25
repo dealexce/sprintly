@@ -3,6 +3,7 @@ import { Plus, X } from 'lucide-react';
 import { clsx } from 'clsx';
 import { Category, Tool } from '../types';
 import { MARKER_COLORS } from '../constants';
+import { useTheme } from '../contexts/ThemeContext';
 
 interface MarkerSetProps {
   categories: Category[];
@@ -37,16 +38,49 @@ export function MarkerSet({
   onToggleColorPicker,
   onSelectColor,
 }: MarkerSetProps) {
+  const { theme } = useTheme();
+  
   return (
-    <div className="flex-1 bg-stone-800 rounded-xl p-1 shadow-[0_20px_50px_rgba(0,0,0,0.5)] border-t border-stone-700 relative max-h-[40%] min-h-[200px]">
-      <div className="h-full bg-stone-900/50 rounded-lg p-4 flex flex-col border-inner border-black/20 overflow-hidden">
-        <div className="flex justify-between items-center mb-4 border-b border-white/10 pb-2 shrink-0">
-          <h3 className="text-stone-400 font-bold uppercase tracking-widest text-[10px]">
+    <div 
+      className="flex-1 rounded-xl p-1 border-t relative max-h-[40%] min-h-[200px]"
+      style={{
+        backgroundColor: theme.colors.markerPanelBg,
+        boxShadow: theme.shadows.marker,
+        borderColor: theme.colors.markerPanelBorder,
+      }}
+    >
+      <div 
+        className="h-full rounded-lg p-4 flex flex-col border-inner overflow-hidden"
+        style={{
+          backgroundColor: theme.colors.markerPanelBgInner,
+          borderColor: 'rgba(0, 0, 0, 0.2)',
+        }}
+      >
+        <div 
+          className="flex justify-between items-center mb-4 pb-2 shrink-0"
+          style={{ borderBottom: `1px solid rgba(255, 255, 255, 0.1)` }}
+        >
+          <h3 
+            className="font-bold uppercase tracking-widest text-[10px]"
+            style={{ color: theme.colors.markerPanelText }}
+          >
             Marker Set
           </h3>
           <button
             onClick={onAddCategory}
-            className="text-stone-500 hover:text-white transition-colors bg-stone-800 p-1 rounded hover:bg-stone-700"
+            className="transition-colors p-1 rounded"
+            style={{
+              color: theme.colors.markerPanelText,
+              backgroundColor: theme.colors.markerBodyBg,
+            }}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.color = '#ffffff';
+              e.currentTarget.style.backgroundColor = theme.colors.markerBodyBgHover;
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.color = theme.colors.markerPanelText;
+              e.currentTarget.style.backgroundColor = theme.colors.markerBodyBg;
+            }}
           >
             <Plus size={16} />
           </button>
@@ -97,8 +131,18 @@ export function MarkerSet({
                         onSelectCategory(cat.id);
                       }}
                       className={clsx(
-                        'flex-1 h-full bg-stone-800 flex items-center px-3 relative rounded-r-full border-t border-b border-r border-stone-950 cursor-pointer hover:bg-stone-750'
+                        'flex-1 h-full flex items-center px-3 relative rounded-r-full border-t border-b border-r cursor-pointer'
                       )}
+                      style={{
+                        backgroundColor: theme.colors.markerBodyBg,
+                        borderColor: theme.colors.markerPanelBorder,
+                      }}
+                      onMouseEnter={(e) => {
+                        e.currentTarget.style.backgroundColor = theme.colors.markerBodyBgHover;
+                      }}
+                      onMouseLeave={(e) => {
+                        e.currentTarget.style.backgroundColor = theme.colors.markerBodyBg;
+                      }}
                     >
                       {isEditingName ? (
                         <input
@@ -111,7 +155,11 @@ export function MarkerSet({
                           autoFocus
                           onClick={(e) => e.stopPropagation()}
                           onBlur={() => onSaveName(cat.id)}
-                          className="w-full bg-stone-900 text-white text-xs px-1 py-0.5 rounded outline-none border border-blue-500"
+                          className="w-full text-white text-xs px-1 py-0.5 rounded outline-none"
+                          style={{
+                            backgroundColor: theme.colors.markerPanelBgInner,
+                            border: `1px solid ${theme.colors.accent}`,
+                          }}
                         />
                       ) : (
                         <span
@@ -120,7 +168,14 @@ export function MarkerSet({
                             onSelectCategory(cat.id);
                             onStartEditName(cat.id, cat.name);
                           }}
-                          className="font-bold text-stone-300 text-xs truncate cursor-text hover:text-white hover:underline decoration-dotted underline-offset-4 transition-colors"
+                          className="font-bold text-xs truncate cursor-text hover:underline decoration-dotted underline-offset-4 transition-colors"
+                          style={{ color: theme.colors.markerPanelText }}
+                          onMouseEnter={(e) => {
+                            e.currentTarget.style.color = '#ffffff';
+                          }}
+                          onMouseLeave={(e) => {
+                            e.currentTarget.style.color = theme.colors.markerPanelText;
+                          }}
                         >
                           {cat.name}
                         </span>
@@ -129,7 +184,14 @@ export function MarkerSet({
                       {!isEditingName && categories.length > 1 && (
                         <button
                           onClick={(e) => onDeleteCategory(cat.id, e)}
-                          className="ml-auto text-stone-600 hover:text-red-400 opacity-0 group-hover:opacity-100 transition-opacity p-1"
+                          className="ml-auto opacity-0 group-hover:opacity-100 transition-opacity p-1"
+                          style={{ color: theme.colors.markerPanelText }}
+                          onMouseEnter={(e) => {
+                            e.currentTarget.style.color = '#f87171';
+                          }}
+                          onMouseLeave={(e) => {
+                            e.currentTarget.style.color = theme.colors.markerPanelText;
+                          }}
                         >
                           <X size={12} />
                         </button>
@@ -139,7 +201,13 @@ export function MarkerSet({
 
                   {/* Color Picker Dropdown */}
                   {isEditingColor && (
-                    <div className="absolute top-full left-0 mt-2 p-2 bg-stone-800 rounded-lg border border-stone-600 shadow-xl z-30 flex flex-wrap gap-1 w-48 animate-in fade-in zoom-in-95 duration-100">
+                    <div 
+                      className="absolute top-full left-0 mt-2 p-2 rounded-lg shadow-xl z-30 flex flex-wrap gap-1 w-48 animate-in fade-in zoom-in-95 duration-100"
+                      style={{
+                        backgroundColor: theme.colors.markerBodyBg,
+                        border: `1px solid ${theme.colors.markerPanelBorder}`,
+                      }}
+                    >
                       {MARKER_COLORS.map((color) => (
                         <button
                           key={color}

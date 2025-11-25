@@ -4,6 +4,7 @@ import { useDraggable } from '@dnd-kit/core';
 import { Todo } from '../types';
 import { Trash2, Square, CheckSquare } from 'lucide-react';
 import { clsx } from 'clsx';
+import { useTheme } from '../contexts/ThemeContext';
 
 interface Props {
   todo: Todo;
@@ -13,6 +14,7 @@ interface Props {
 }
 
 export const DraggableTodo: React.FC<Props> = ({ todo, onDelete, onToggle, onUpdate }) => {
+  const { theme } = useTheme();
   const [isEditing, setIsEditing] = useState(false);
   const [editText, setEditText] = useState(todo.text);
   const inputRef = useRef<HTMLInputElement>(null);
@@ -56,22 +58,39 @@ export const DraggableTodo: React.FC<Props> = ({ todo, onDelete, onToggle, onUpd
       ref={setNodeRef}
       style={style}
       className={clsx(
-        "group flex items-start gap-2 p-2 mb-2 font-hand text-lg transition-all duration-200 border-b border-dotted border-stone-400/30",
+        "group flex items-start gap-2 p-2 mb-2 font-hand text-lg transition-all duration-200 border-b border-dotted",
         isDragging 
-          ? "rotate-2 shadow-xl scale-105 bg-yellow-100/90 cursor-grabbing z-50 rounded" 
-          : "hover:bg-yellow-50/50",
+          ? "rotate-2 shadow-xl scale-105 cursor-grabbing z-50 rounded" 
+          : "",
         !isEditing && "cursor-grab touch-none"
       )}
       {...attributes}
       {...listeners}
+      onMouseEnter={(e) => {
+        if (!isDragging) {
+          e.currentTarget.style.backgroundColor = `${theme.colors.stickyText}08`;
+        }
+      }}
+      onMouseLeave={(e) => {
+        if (!isDragging) {
+          e.currentTarget.style.backgroundColor = 'transparent';
+        }
+      }}
     >
       {/* Checkbox */}
       <button 
-        className="mt-1.5 text-stone-500 hover:text-stone-800 transition-colors flex-shrink-0 relative z-10 cursor-pointer"
+        className="mt-1.5 transition-colors flex-shrink-0 relative z-10 cursor-pointer"
+        style={{ color: theme.colors.textSecondary }}
         onPointerDown={(e) => e.stopPropagation()} 
         onClick={(e) => {
           e.stopPropagation();
           onToggle(todo.id);
+        }}
+        onMouseEnter={(e) => {
+          e.currentTarget.style.color = theme.colors.textPrimary;
+        }}
+        onMouseLeave={(e) => {
+          e.currentTarget.style.color = theme.colors.textSecondary;
         }}
       >
         {todo.completed ? <CheckSquare size={18} /> : <Square size={18} />}
@@ -86,7 +105,12 @@ export const DraggableTodo: React.FC<Props> = ({ todo, onDelete, onToggle, onUpd
             onBlur={handleSave}
             onKeyDown={handleKeyDown}
             onPointerDown={(e) => e.stopPropagation()}
-            className="w-full bg-white/50 border-b border-stone-400 outline-none text-stone-900 px-1"
+            className="w-full outline-none px-1"
+            style={{
+              backgroundColor: 'rgba(255, 255, 255, 0.5)',
+              borderBottom: `1px solid ${theme.colors.stickyBorder}`,
+              color: theme.colors.stickyText,
+            }}
           />
         ) : (
           <p 
@@ -96,9 +120,13 @@ export const DraggableTodo: React.FC<Props> = ({ todo, onDelete, onToggle, onUpd
                 setIsEditing(true);
               }}
               className={clsx(
-              "break-words leading-tight select-none text-stone-800 hover:bg-black/5 rounded px-1 cursor-text relative z-10",
-              todo.completed && "line-through text-stone-400"
-          )}>
+              "break-words leading-tight select-none hover:bg-black/5 rounded px-1 cursor-text relative z-10",
+              todo.completed && "line-through"
+          )}
+          style={{
+            color: todo.completed ? theme.colors.textTertiary : theme.colors.stickyText,
+          }}
+          >
               {todo.text}
           </p>
         )}
@@ -110,7 +138,14 @@ export const DraggableTodo: React.FC<Props> = ({ todo, onDelete, onToggle, onUpd
             e.stopPropagation();
             onDelete(todo.id);
         }}
-        className="mt-1.5 opacity-0 group-hover:opacity-100 text-stone-400 hover:text-red-500 transition-opacity flex-shrink-0 relative z-10 cursor-pointer"
+        className="mt-1.5 opacity-0 group-hover:opacity-100 transition-opacity flex-shrink-0 relative z-10 cursor-pointer"
+        style={{ color: theme.colors.textTertiary }}
+        onMouseEnter={(e) => {
+          e.currentTarget.style.color = '#f87171';
+        }}
+        onMouseLeave={(e) => {
+          e.currentTarget.style.color = theme.colors.textTertiary;
+        }}
       >
         <Trash2 size={14} />
       </button>

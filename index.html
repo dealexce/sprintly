@@ -11,6 +11,7 @@
       body {
         font-family: 'Inter', sans-serif;
         overflow: hidden;
+        transition: background-color 0.3s ease;
       }
       
       .font-hand {
@@ -25,33 +26,18 @@
         background: transparent;
       }
       .paper-scroll::-webkit-scrollbar-thumb {
-        background-color: #d1d5db;
+        background-color: rgba(0, 0, 0, 0.2);
         border-radius: 20px;
       }
       
       .pattern-grid {
         background-size: 40px 40px;
-        background-image:
-          linear-gradient(to right, rgba(0,0,0,0.05) 1px, transparent 1px),
-          linear-gradient(to bottom, rgba(0,0,0,0.05) 1px, transparent 1px);
-      }
-      
-      /* Wood grain simulation via gradient */
-      .bg-wood {
-        background-color: #2a2a2a;
-        background-image: radial-gradient(circle at 50% 30%, #4a4a4a, #1a1a1a);
+        background-image: var(--pattern-grid);
       }
 
-      /* Paper thickness effect */
+      /* Paper thickness effect - uses CSS variable */
       .paper-stack {
-        box-shadow: 
-          1px 1px 0 #e5e5e5,
-          2px 2px 0 #e5e5e5,
-          3px 3px 0 #e5e5e5,
-          4px 4px 0 #e5e5e5,
-          5px 5px 0 #e5e5e5,
-          0 20px 25px -5px rgba(0, 0, 0, 0.3), 
-          0 10px 10px -5px rgba(0, 0, 0, 0.2);
+        box-shadow: var(--shadow-paper);
       }
     </style>
   <script type="importmap">
@@ -67,7 +53,7 @@
 }
 </script>
 </head>
-  <body class="bg-wood h-screen w-screen text-slate-800 select-none">
+  <body class="text-slate-800 select-none">
     <div id="root"></div>
     <script type="module" src="/index.tsx"></script>
   </body>

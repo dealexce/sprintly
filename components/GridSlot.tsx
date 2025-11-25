@@ -3,6 +3,7 @@ import React from 'react';
 import { useDroppable } from '@dnd-kit/core';
 import { TimeSlotData, Category, Todo } from '../types';
 import { clsx } from 'clsx';
+import { useTheme } from '../contexts/ThemeContext';
 
 interface Props {
   data: TimeSlotData;
@@ -31,6 +32,7 @@ export const GridSlot: React.FC<Props> = ({
   hasNextSame,
   isEraserActive
 }) => {
+  const { theme } = useTheme();
   const { setNodeRef, isOver } = useDroppable({
     id: `slot-${data.index}`,
     data: { index: data.index, categoryId: data.categoryId },
@@ -44,14 +46,24 @@ export const GridSlot: React.FC<Props> = ({
       ref={setNodeRef}
       className={clsx(
         "flex-1 relative group select-none",
-        // Default grid border
-        !hasNextSame ? "border-r border-stone-200" : "", 
-        "last:border-r-0",
-        // Hover effect only if empty or using eraser
-        (!category || isEraserActive) && "hover:bg-stone-100/50 transition-colors"
+        !hasNextSame && "last:border-r-0",
+        (!category || isEraserActive) && "transition-colors"
       )}
+      style={{
+        borderRight: !hasNextSame ? `1px solid ${theme.colors.gridBorder}` : 'none',
+      }}
       onMouseDown={(e) => { e.preventDefault(); onMouseDown(data.index); }}
       onMouseEnter={() => onMouseEnter(data.index)}
+      onMouseOver={(e) => {
+        if (!category || isEraserActive) {
+          e.currentTarget.style.backgroundColor = theme.colors.gridHover;
+        }
+      }}
+      onMouseOut={(e) => {
+        if (!category || isEraserActive) {
+          e.currentTarget.style.backgroundColor = 'transparent';
+        }
+      }}
     >
       {/* The Colored Ink Block */}
       {category && (
@@ -80,7 +92,7 @@ export const GridSlot: React.FC<Props> = ({
           key={todo.id}
           className={clsx(
             "absolute left-0 z-20 w-full overflow-visible pl-1",
-            isEraserActive ? "cursor-pointer hover:brightness-90" : "pointer-events-none"
+            isEraserActive ? "cursor-pointer" : "pointer-events-none"
           )}
           onMouseDown={(e) => {
             if (isEraserActive) {
@@ -94,12 +106,29 @@ export const GridSlot: React.FC<Props> = ({
             zIndex: 20 + idx 
           }}
         >
-            <div className={clsx(
-              "inline-block bg-[#fffae5] border border-stone-300 shadow-sm text-stone-800 text-[9px] px-1.5 py-0.5 rounded-sm font-hand transform origin-bottom-left max-w-[120px] truncate transition-transform",
-              // Random rotation for natural look
-              idx % 2 === 0 ? "-rotate-1" : "rotate-1",
-              isEraserActive && "group-hover:scale-95 group-hover:ring-2 group-hover:ring-red-400"
-            )}>
+            <div 
+              className={clsx(
+                "inline-block shadow-sm text-[9px] px-1.5 py-0.5 rounded-sm font-hand transform origin-bottom-left max-w-[120px] truncate transition-transform",
+                idx % 2 === 0 ? "-rotate-1" : "rotate-1"
+              )}
+              style={{
+                backgroundColor: theme.colors.tagBg,
+                border: `1px solid ${theme.colors.tagBorder}`,
+                color: theme.colors.tagText,
+              }}
+              onMouseEnter={(e) => {
+                if (isEraserActive) {
+                  e.currentTarget.style.transform = `scale(0.95) ${idx % 2 === 0 ? 'rotate(-1deg)' : 'rotate(1deg)'}`;
+                  e.currentTarget.style.boxShadow = `0 0 0 2px #f87171`;
+                }
+              }}
+              onMouseLeave={(e) => {
+                if (isEraserActive) {
+                  e.currentTarget.style.transform = `scale(1) ${idx % 2 === 0 ? 'rotate(-1deg)' : 'rotate(1deg)'}`;
+                  e.currentTarget.style.boxShadow = '';
+                }
+              }}
+            >
               {todo.text}
             </div>
         </div>

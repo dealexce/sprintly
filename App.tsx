@@ -8,6 +8,7 @@ import { useSessionStorage } from './hooks/useSessionStorage';
 import { useCurrentTime } from './hooks/useCurrentTime';
 import { useNotifications } from './hooks/useNotifications';
 import { useDragAndDrop } from './hooks/useDragAndDrop';
+import { useTheme } from './contexts/ThemeContext';
 
 // Utils
 import { paintSlot, removeTodoFromAllSlots, clearCategoryFromGrid } from './utils/gridOperations';
@@ -21,6 +22,7 @@ import { TimeGrid } from './components/TimeGrid';
 import { TodoPanel } from './components/TodoPanel';
 import { EraserTool } from './components/EraserTool';
 import { MarkerSet } from './components/MarkerSet';
+import { ThemeSwitch } from './components/ThemeSwitch';
 
 // Session Storage Keys
 const STORAGE_KEYS = {
@@ -30,6 +32,8 @@ const STORAGE_KEYS = {
 };
 
 export default function App() {
+  const { theme } = useTheme();
+  
   // --- State Management with Custom Hooks ---
   const [categories, setCategories] = useSessionStorage(STORAGE_KEYS.CATEGORIES, INITIAL_CATEGORIES);
   const [todos, setTodos] = useSessionStorage(STORAGE_KEYS.TODOS, []);
@@ -189,13 +193,27 @@ export default function App() {
         className="flex h-screen w-screen overflow-hidden p-4 md:p-8 gap-8 items-center justify-center relative transition-colors"
         style={{ cursor: cursorStyle }}
       >
+        {/* Theme Switcher - Floating in top right */}
+        <div className="absolute top-4 right-4 z-50">
+          <ThemeSwitch />
+        </div>
+
         {/* --- LEFT PANEL: DAILY PLANNER --- */}
         <div className="h-full flex-1 max-w-5xl relative z-10 flex flex-col">
-          <div className="h-full bg-[#fdfbf7] rounded-sm paper-stack flex flex-col overflow-hidden border border-stone-200/60 relative">
+          <div 
+            className="h-full rounded-sm paper-stack flex flex-col overflow-hidden relative"
+            style={{ 
+              backgroundColor: theme.colors.paperBg,
+              border: `1px solid ${theme.colors.border}` 
+            }}
+          >
             <HeaderSection title="day sprint" date={currentDate} />
 
             {/* Grid Content Container */}
-            <div className="flex-1 overflow-hidden flex flex-col bg-[#fdfbf7] relative">
+            <div 
+              className="flex-1 overflow-hidden flex flex-col relative"
+              style={{ backgroundColor: theme.colors.gridBg }}
+            >
               <div className="absolute inset-0 pattern-grid opacity-30 pointer-events-none mix-blend-multiply"></div>
 
               <TimeGrid
@@ -249,7 +267,14 @@ export default function App() {
 
         <DragOverlay>
           {activeDragTodo ? (
-            <div className="w-48 bg-yellow-100 p-2 border border-stone-300 shadow-2xl rotate-3 opacity-90 cursor-grabbing font-hand text-sm rounded-sm">
+            <div 
+              className="w-48 p-2 shadow-2xl rotate-3 opacity-90 cursor-grabbing font-hand text-sm rounded-sm"
+              style={{
+                backgroundColor: theme.colors.tagBg,
+                border: `1px solid ${theme.colors.tagBorder}`,
+                color: theme.colors.tagText,
+              }}
+            >
               {activeDragTodo.text}
             </div>
           ) : null}

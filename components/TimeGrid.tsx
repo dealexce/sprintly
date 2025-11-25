@@ -1,6 +1,7 @@
 import React from 'react';
 import { Category, TimeSlotData, Todo, Tool } from '../types';
 import { TimeColumn } from './TimeColumn';
+import { useTheme } from '../contexts/ThemeContext';
 
 interface TimeGridProps {
   grid: TimeSlotData[];
@@ -23,13 +24,17 @@ export function TimeGrid({
   onMouseEnterSlot,
   onTodoTagClick,
 }: TimeGridProps) {
+  const { theme } = useTheme();
   const amHours = Array.from({ length: 12 }, (_, i) => i);
   const pmHours = Array.from({ length: 12 }, (_, i) => i + 12);
 
   return (
     <div className="flex-1 flex overflow-hidden">
       {/* AM Column */}
-      <div className="flex-1 flex flex-col border-r-4 border-double border-stone-300/50">
+      <div 
+        className="flex-1 flex flex-col border-r-4 border-double"
+        style={{ borderColor: `${theme.colors.gridBorder}80` }}
+      >
         <TimeColumn
           hours={amHours}
           grid={grid}

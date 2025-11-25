@@ -2,6 +2,7 @@ import React from 'react';
 import { Category, TimeSlotData, Todo, Tool } from '../types';
 import { formatHour12 } from '../constants';
 import { GridSlot } from './GridSlot';
+import { useTheme } from '../contexts/ThemeContext';
 
 interface TimeColumnProps {
   hours: number[];
@@ -26,15 +27,33 @@ export function TimeColumn({
   onMouseEnterSlot,
   onTodoTagClick,
 }: TimeColumnProps) {
+  const { theme } = useTheme();
+  
   return (
-    <div className="flex-1 flex flex-col relative border-stone-200 last:border-r-0">
+    <div className="flex-1 flex flex-col relative last:border-r-0">
       {/* Column Headers (Minutes) */}
-      <div className="flex border-b border-stone-300 bg-stone-50/80 shrink-0 sticky top-0 z-20">
-        <div className="w-12 border-r border-stone-300 bg-stone-100/50"></div>
+      <div 
+        className="flex shrink-0 sticky top-0 z-20"
+        style={{
+          borderBottom: `1px solid ${theme.colors.gridBorder}`,
+          backgroundColor: theme.colors.timeHeaderBg,
+        }}
+      >
+        <div 
+          className="w-12"
+          style={{
+            borderRight: `1px solid ${theme.colors.gridBorder}`,
+            backgroundColor: theme.colors.timeLabelBg,
+          }}
+        ></div>
         {[0, 15, 30, 45].map((min) => (
           <div
             key={min}
-            className="flex-1 text-center py-1 text-[10px] font-mono text-stone-400 border-r border-stone-200 last:border-r-0"
+            className="flex-1 text-center py-1 text-[10px] font-mono last:border-r-0"
+            style={{
+              color: theme.colors.timeLabelText,
+              borderRight: `1px solid ${theme.colors.borderLight}`,
+            }}
           >
             :{min.toString().padStart(2, '0')}
           </div>
@@ -49,12 +68,22 @@ export function TimeColumn({
         return (
           <div
             key={hour}
-            className="flex-1 flex border-b border-stone-300 min-h-[2.5rem]"
+            className="flex-1 flex min-h-[2.5rem]"
+            style={{
+              borderBottom: `1px solid ${theme.colors.gridBorder}`,
+            }}
           >
             {/* Time Label */}
-            <div className="w-12 flex items-center justify-center text-[10px] text-stone-500 font-bold font-mono border-r border-stone-300 bg-stone-100/50 select-none shrink-0">
+            <div 
+              className="w-12 flex items-center justify-center text-[10px] font-bold font-mono select-none shrink-0"
+              style={{
+                color: theme.colors.timeLabelText,
+                borderRight: `1px solid ${theme.colors.gridBorder}`,
+                backgroundColor: theme.colors.timeLabelBg,
+              }}
+            >
               {formatHour12(hour).split(' ')[0]}{' '}
-              <span className="text-[8px] ml-0.5 text-stone-400">
+              <span className="text-[8px] ml-0.5" style={{ color: theme.colors.textTertiary }}>
                 {hour < 12 ? 'AM' : 'PM'}
               </span>
             </div>
