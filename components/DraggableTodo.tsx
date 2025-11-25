@@ -56,9 +56,15 @@ export const DraggableTodo: React.FC<Props> = ({ todo, onDelete, onToggle, onUpd
   return (
     <div
       ref={setNodeRef}
-      style={style}
+      style={{
+        ...style,
+        fontFamily: theme.typography.handFont,
+        fontSize: theme.typography.bodySize,
+        borderBottomWidth: theme.borders.width,
+        transition: `all ${theme.animations.duration} ${theme.animations.easing}`,
+      }}
       className={clsx(
-        "group flex items-start gap-2 p-2 mb-2 font-hand text-lg transition-all duration-200 border-b border-dotted",
+        "group flex items-start gap-2 p-2 mb-2 font-hand border-b border-dotted",
         isDragging 
           ? "rotate-2 shadow-xl scale-105 cursor-grabbing z-50 rounded" 
           : "",
@@ -80,7 +86,10 @@ export const DraggableTodo: React.FC<Props> = ({ todo, onDelete, onToggle, onUpd
       {/* Checkbox */}
       <button 
         className="mt-1.5 transition-colors flex-shrink-0 relative z-10 cursor-pointer"
-        style={{ color: theme.colors.textSecondary }}
+        style={{ 
+          color: theme.colors.textSecondary,
+          transition: `color ${theme.animations.duration}`,
+        }}
         onPointerDown={(e) => e.stopPropagation()} 
         onClick={(e) => {
           e.stopPropagation();
@@ -108,8 +117,11 @@ export const DraggableTodo: React.FC<Props> = ({ todo, onDelete, onToggle, onUpd
             className="w-full outline-none px-1"
             style={{
               backgroundColor: 'rgba(255, 255, 255, 0.5)',
-              borderBottom: `1px solid ${theme.colors.stickyBorder}`,
+              borderBottom: `${theme.borders.width} ${theme.borders.style} ${theme.colors.stickyBorder}`,
               color: theme.colors.stickyText,
+              fontFamily: theme.typography.handFont,
+              fontSize: theme.typography.bodySize,
+              borderRadius: theme.borders.radius,
             }}
           />
         ) : (
@@ -125,6 +137,7 @@ export const DraggableTodo: React.FC<Props> = ({ todo, onDelete, onToggle, onUpd
           )}
           style={{
             color: todo.completed ? theme.colors.textTertiary : theme.colors.stickyText,
+            fontFamily: theme.typography.handFont,
           }}
           >
               {todo.text}

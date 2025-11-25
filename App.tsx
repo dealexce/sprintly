@@ -15,6 +15,7 @@ import { paintSlot, removeTodoFromAllSlots, clearCategoryFromGrid } from './util
 import { createNewCategory, updateCategoryName, updateCategoryColor, deleteCategory as deleteCategoryUtil } from './utils/categoryOperations';
 import { createNewTodo, updateTodoText, toggleTodoCompleted, deleteTodo as deleteTodoUtil } from './utils/todoOperations';
 import { getCursorStyle } from './utils/cursorStyles';
+import { getColorHex } from './constants';
 
 // Components
 import { HeaderSection } from './components/HeaderSection';
@@ -180,6 +181,22 @@ export default function App() {
     [tool, categories]
   );
 
+  // --- Active Marker Color with Opacity ---
+  const activeMarkerColor = useMemo(() => {
+    if (tool.type === 'marker' && tool.categoryId) {
+      const category = categories.find((c) => c.id === tool.categoryId);
+      if (category) {
+        const hex = getColorHex(category.color);
+        // Convert hex to rgba with 20% opacity
+        const r = parseInt(hex.slice(1, 3), 16);
+        const g = parseInt(hex.slice(3, 5), 16);
+        const b = parseInt(hex.slice(5, 7), 16);
+        return `rgba(${r}, ${g}, ${b}, 0.2)`;
+      }
+    }
+    return undefined;
+  }, [tool, categories]);
+
   // --- Date Formatting ---
   const currentDate = new Date().toLocaleDateString(undefined, {
     weekday: 'long',
@@ -190,8 +207,15 @@ export default function App() {
   return (
     <DndContext sensors={sensors} onDragStart={handleDragStart} onDragEnd={handleDragEnd}>
       <div
-        className="flex h-screen w-screen overflow-hidden p-4 md:p-8 gap-8 items-center justify-center relative transition-colors"
-        style={{ cursor: cursorStyle }}
+        className="flex h-screen w-screen overflow-hidden gap-8 items-center justify-center relative"
+        style={{ 
+          cursor: cursorStyle,
+          padding: theme.spacing.padding,
+          fontFamily: theme.typography.bodyFont,
+          fontSize: theme.typography.bodySize,
+          transition: `all ${theme.animations.duration} ${theme.animations.easing}`,
+          backgroundColor: theme.colors.background,
+        }}
       >
         {/* Theme Switcher - Floating in top right */}
         <div className="absolute top-4 right-4 z-50">
@@ -201,10 +225,12 @@ export default function App() {
         {/* --- LEFT PANEL: DAILY PLANNER --- */}
         <div className="h-full flex-1 max-w-5xl relative z-10 flex flex-col">
           <div 
-            className="h-full rounded-sm paper-stack flex flex-col overflow-hidden relative"
+            className="h-full paper-stack flex flex-col overflow-hidden relative"
             style={{ 
               backgroundColor: theme.colors.paperBg,
-              border: `1px solid ${theme.colors.border}` 
+              border: `${theme.borders.width} ${theme.borders.style} ${theme.colors.border}`,
+              borderRadius: theme.borders.radius,
+              filter: `brightness(${theme.effects.brightness}) contrast(${theme.effects.contrast}) saturate(${theme.effects.saturate})`,
             }}
           >
             <HeaderSection title="day sprint" date={currentDate} />
@@ -212,9 +238,20 @@ export default function App() {
             {/* Grid Content Container */}
             <div 
               className="flex-1 overflow-hidden flex flex-col relative"
-              style={{ backgroundColor: theme.colors.gridBg }}
+              style={{ 
+                backgroundColor: theme.colors.gridBg,
+              }}
             >
               <div className="absolute inset-0 pattern-grid opacity-30 pointer-events-none mix-blend-multiply"></div>
+              {theme.patterns.texture && (
+                <div 
+                  className="absolute inset-0 pointer-events-none" 
+                  style={{ 
+                    backgroundImage: theme.patterns.texture,
+                    opacity: 0.5,
+                  }}
+                ></div>
+              )}
 
               <TimeGrid
                 grid={grid}
@@ -225,13 +262,17 @@ export default function App() {
                 onMouseDownSlot={handleMouseDownSlot}
                 onMouseEnterSlot={handleMouseEnterSlot}
                 onTodoTagClick={handleTodoTagClick}
+                activeMarkerColor={activeMarkerColor}
               />
             </div>
           </div>
         </div>
 
         {/* --- RIGHT PANEL: TOOLS --- */}
-        <div className="flex flex-col w-80 h-full gap-4 z-20 py-4">
+        <div 
+          className="flex flex-col w-80 h-full z-20 py-4"
+          style={{ gap: theme.spacing.gridGap || '1rem' }}
+        >
           <TodoPanel
             todos={todos}
             newTodoText={newTodoText}
@@ -268,11 +309,14 @@ export default function App() {
         <DragOverlay>
           {activeDragTodo ? (
             <div 
-              className="w-48 p-2 shadow-2xl rotate-3 opacity-90 cursor-grabbing font-hand text-sm rounded-sm"
+              className="w-48 p-2 shadow-2xl opacity-90 cursor-grabbing font-hand text-sm"
               style={{
                 backgroundColor: theme.colors.tagBg,
-                border: `1px solid ${theme.colors.tagBorder}`,
+                border: `${theme.borders.width} ${theme.borders.style} ${theme.colors.tagBorder}`,
                 color: theme.colors.tagText,
+                borderRadius: theme.borders.radius,
+                transform: 'rotate(3deg)',
+                fontFamily: theme.typography.handFont,
               }}
             >
               {activeDragTodo.text}

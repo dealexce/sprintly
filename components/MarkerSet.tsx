@@ -47,6 +47,9 @@ export function MarkerSet({
         backgroundColor: theme.colors.markerPanelBg,
         boxShadow: theme.shadows.marker,
         borderColor: theme.colors.markerPanelBorder,
+        borderTopWidth: theme.borders.width,
+        borderRadius: theme.borders.radius,
+        padding: theme.spacing.padding,
       }}
     >
       <div 
@@ -54,15 +57,23 @@ export function MarkerSet({
         style={{
           backgroundColor: theme.colors.markerPanelBgInner,
           borderColor: 'rgba(0, 0, 0, 0.2)',
+          borderRadius: theme.borders.radius,
         }}
       >
         <div 
           className="flex justify-between items-center mb-4 pb-2 shrink-0"
-          style={{ borderBottom: `1px solid rgba(255, 255, 255, 0.1)` }}
+          style={{ 
+            borderBottom: `${theme.borders.width} solid rgba(255, 255, 255, 0.1)` 
+          }}
         >
           <h3 
             className="font-bold uppercase tracking-widest text-[10px]"
-            style={{ color: theme.colors.markerPanelText }}
+            style={{ 
+              color: theme.colors.markerPanelText,
+              fontFamily: theme.typography.monoFont,
+              fontSize: '0.625rem',
+              fontWeight: theme.typography.fontWeight,
+            }}
           >
             Marker Set
           </h3>
@@ -72,6 +83,8 @@ export function MarkerSet({
             style={{
               color: theme.colors.markerPanelText,
               backgroundColor: theme.colors.markerBodyBg,
+              borderRadius: theme.borders.radius,
+              transition: `all ${theme.animations.duration} ${theme.animations.easing}`,
             }}
             onMouseEnter={(e) => {
               e.currentTarget.style.color = '#ffffff';
@@ -82,7 +95,7 @@ export function MarkerSet({
               e.currentTarget.style.backgroundColor = theme.colors.markerBodyBg;
             }}
           >
-            <Plus size={16} />
+            <Plus size={16} /> +
           </button>
         </div>
 
@@ -169,7 +182,12 @@ export function MarkerSet({
                             onStartEditName(cat.id, cat.name);
                           }}
                           className="font-bold text-xs truncate cursor-text hover:underline decoration-dotted underline-offset-4 transition-colors"
-                          style={{ color: theme.colors.markerPanelText }}
+                          style={{ 
+                            color: theme.colors.markerPanelText,
+                            fontFamily: theme.typography.bodyFont,
+                            fontWeight: theme.typography.fontWeight,
+                            transition: `color ${theme.animations.duration}`,
+                          }}
                           onMouseEnter={(e) => {
                             e.currentTarget.style.color = '#ffffff';
                           }}
@@ -184,16 +202,18 @@ export function MarkerSet({
                       {!isEditingName && categories.length > 1 && (
                         <button
                           onClick={(e) => onDeleteCategory(cat.id, e)}
-                          className="ml-auto opacity-0 group-hover:opacity-100 transition-opacity p-1"
-                          style={{ color: theme.colors.markerPanelText }}
+                          className="ml-auto opacity-0 group-hover:opacity-100 transition-opacity p-1 rounded flex items-center gap-1"
+                          style={{ 
+                            color: '#ff6b6b',
+                          }}
                           onMouseEnter={(e) => {
-                            e.currentTarget.style.color = '#f87171';
+                            e.currentTarget.style.color = '#ff0000';
                           }}
                           onMouseLeave={(e) => {
-                            e.currentTarget.style.color = theme.colors.markerPanelText;
+                            e.currentTarget.style.color = '#ff6b6b';
                           }}
                         >
-                          <X size={12} />
+                          <X size={12} /> ×
                         </button>
                       )}
                     </div>

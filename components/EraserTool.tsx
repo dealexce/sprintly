@@ -17,30 +17,41 @@ export function EraserTool({ isActive, onSelect }: EraserToolProps) {
       <div
         onClick={onSelect}
         className={clsx(
-          'relative w-full mx-4 h-10 bg-pink-400 rounded-sm cursor-pointer transform transition-all flex items-center justify-center group border-b-4 border-pink-600',
+          'relative w-full mx-4 h-10 cursor-pointer transform transition-all flex items-center justify-center group',
           isActive
-            ? 'scale-105 -translate-y-1 rotate-1 ring-2 ring-white'
+            ? 'scale-105 -translate-y-1 rotate-1'
             : ''
         )}
         style={{
-          boxShadow: isActive ? '4px 8px 12px rgba(0, 0, 0, 0.3)' : '2px 4px 6px rgba(0, 0, 0, 0.3)',
+          backgroundColor: '#ec4899',
+          border: `${theme.borders.width} solid ${isActive ? theme.colors.accent : '#be185d'}`,
+          borderRadius: theme.borders.radius,
+          boxShadow: isActive ? theme.shadows.elevation2 : theme.shadows.elevation1,
+          transition: `all ${theme.animations.duration} ${theme.animations.easing}`,
         }}
         onMouseEnter={(e) => {
           if (!isActive) {
             e.currentTarget.style.transform = 'translateY(-2px)';
-            e.currentTarget.style.boxShadow = '2px 5px 8px rgba(0, 0, 0, 0.3)';
+            e.currentTarget.style.boxShadow = theme.shadows.elevation2;
           }
         }}
         onMouseLeave={(e) => {
           if (!isActive) {
             e.currentTarget.style.transform = '';
-            e.currentTarget.style.boxShadow = '2px 4px 6px rgba(0, 0, 0, 0.3)';
+            e.currentTarget.style.boxShadow = theme.shadows.elevation1;
           }
         }}
       >
         <div className="absolute left-4 right-4 top-0 bottom-0 bg-white opacity-30 border-x border-white/50"></div>
-        <span className="relative font-bold text-white text-xs tracking-widest uppercase drop-shadow-md flex items-center gap-2">
-          <Eraser size={14} /> Eraser
+        <span 
+          className="relative font-bold text-xs tracking-widest uppercase flex items-center gap-2"
+          style={{
+            color: '#ffffff',
+            fontFamily: theme.typography.bodyFont,
+            textShadow: '0 1px 3px rgba(0, 0, 0, 0.5)',
+          }}
+        >
+          <Eraser size={14} /> ERASER
         </span>
       </div>
     </div>

@@ -12,6 +12,7 @@ interface TimeGridProps {
   onMouseDownSlot: (index: number) => void;
   onMouseEnterSlot: (index: number) => void;
   onTodoTagClick: (todoId: string) => void;
+  activeMarkerColor?: string;
 }
 
 export function TimeGrid({
@@ -23,6 +24,7 @@ export function TimeGrid({
   onMouseDownSlot,
   onMouseEnterSlot,
   onTodoTagClick,
+  activeMarkerColor,
 }: TimeGridProps) {
   const { theme } = useTheme();
   const amHours = Array.from({ length: 12 }, (_, i) => i);
@@ -45,6 +47,7 @@ export function TimeGrid({
           onMouseDownSlot={onMouseDownSlot}
           onMouseEnterSlot={onMouseEnterSlot}
           onTodoTagClick={onTodoTagClick}
+          activeMarkerColor={activeMarkerColor}
         />
       </div>
       {/* PM Column */}
@@ -59,6 +62,7 @@ export function TimeGrid({
           onMouseDownSlot={onMouseDownSlot}
           onMouseEnterSlot={onMouseEnterSlot}
           onTodoTagClick={onTodoTagClick}
+          activeMarkerColor={activeMarkerColor}
         />
       </div>
     </div>

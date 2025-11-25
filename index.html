@@ -6,12 +6,12 @@
     <title>DaySculpt 3D Planner</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
-      @import url('https://fonts.googleapis.com/css2?family=Kalam:wght@300;400;700&family=Inter:wght@400;500;600&display=swap');
+      @import url('https://fonts.googleapis.com/css2?family=Kalam:wght@300;400;700&family=Inter:wght@400;500;600&family=Patrick+Hand&family=Orbitron:wght@700&family=Rajdhani:wght@500;700&family=Share+Tech+Mono&display=swap');
       
       body {
         font-family: 'Inter', sans-serif;
         overflow: hidden;
-        transition: background-color 0.3s ease;
+        transition: background-color 0.3s ease, background-image 0.3s ease;
       }
       
       .font-hand {
@@ -39,6 +39,101 @@
       .paper-stack {
         box-shadow: var(--shadow-paper);
       }
+
+      /* Retro PC Theme - CRT Scanlines Effect */
+      .theme-retro-pc .paper-stack::after {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: repeating-linear-gradient(
+          0deg,
+          transparent,
+          transparent 2px,
+          rgba(0, 255, 0, 0.03) 2px,
+          rgba(0, 255, 0, 0.03) 4px
+        );
+        pointer-events: none;
+        z-index: 100;
+        animation: scanline 8s linear infinite;
+      }
+
+      @keyframes scanline {
+        0% { transform: translateY(0); }
+        100% { transform: translateY(4px); }
+      }
+
+      .theme-retro-pc * {
+        text-shadow: 0 0 5px currentColor;
+        -webkit-font-smoothing: none;
+        -moz-osx-font-smoothing: grayscale;
+      }
+
+      /* Glass Theme - Glassmorphism */
+      .theme-glass .paper-stack,
+      .theme-glass .surface-element {
+        backdrop-filter: blur(20px);
+        -webkit-backdrop-filter: blur(20px);
+      }
+
+      .theme-glass {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        background-attachment: fixed;
+      }
+
+      /* Sketchy Theme - Hand-drawn effect */
+      .theme-sketchy .paper-stack {
+        filter: url(#rough);
+      }
+
+      .theme-sketchy * {
+        text-rendering: optimizeLegibility;
+      }
+
+      /* Brutalist Theme - No compromises */
+      .theme-brutalist * {
+        image-rendering: pixelated;
+        text-rendering: optimizeSpeed;
+      }
+
+      /* Neon Cyber Theme - Glow effects */
+      .theme-neon-cyber {
+        background: linear-gradient(180deg, #0a0a1a 0%, #1a0a2e 100%);
+        background-attachment: fixed;
+      }
+
+      .theme-neon-cyber * {
+        text-shadow: 0 0 10px currentColor, 0 0 20px currentColor;
+      }
+
+      .theme-neon-cyber .paper-stack::before {
+        content: '';
+        position: absolute;
+        top: -2px;
+        left: -2px;
+        right: -2px;
+        bottom: -2px;
+        background: linear-gradient(45deg, #ff00ff, #00ffff, #ff00ff);
+        border-radius: inherit;
+        z-index: -1;
+        opacity: 0.3;
+        filter: blur(10px);
+        animation: pulse 3s ease-in-out infinite;
+      }
+
+      @keyframes pulse {
+        0%, 100% { opacity: 0.3; }
+        50% { opacity: 0.6; }
+      }
+
+      /* SVG filters for sketchy theme */
+      svg {
+        position: absolute;
+        width: 0;
+        height: 0;
+      }
     </style>
   <script type="importmap">
 {
@@ -54,6 +149,16 @@
 </script>
 </head>
   <body class="text-slate-800 select-none">
+    <!-- SVG Filters -->
+    <svg>
+      <defs>
+        <filter id="rough">
+          <feTurbulence type="fractalNoise" baseFrequency="0.05" numOctaves="2" result="noise" />
+          <feDisplacementMap in="SourceGraphic" in2="noise" scale="2" xChannelSelector="R" yChannelSelector="G" />
+        </filter>
+      </defs>
+    </svg>
+    
     <div id="root"></div>
     <script type="module" src="/index.tsx"></script>
   </body>

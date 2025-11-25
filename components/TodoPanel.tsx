@@ -25,14 +25,34 @@ export function TodoPanel({
   const { theme } = useTheme();
   
   return (
-    <div className="flex-1 relative transform rotate-1 hover:rotate-0 transition-transform duration-300 origin-top-right min-h-0">
+    <div 
+      className="flex-1 relative transform origin-top-right min-h-0"
+      style={{
+        transform: theme.spacing.compact ? 'rotate(0)' : 'rotate(1deg)',
+        transition: `transform ${theme.animations.duration} ${theme.animations.easing}`,
+      }}
+      onMouseEnter={(e) => {
+        if (!theme.spacing.compact) {
+          e.currentTarget.style.transform = 'rotate(0)';
+        }
+      }}
+      onMouseLeave={(e) => {
+        if (!theme.spacing.compact) {
+          e.currentTarget.style.transform = 'rotate(1deg)';
+        }
+      }}
+    >
       <div className="absolute inset-0 bg-black/20 blur-md translate-y-2 translate-x-2 rounded-sm"></div>
 
       <div 
-        className="absolute inset-0 p-4 flex flex-col clip-path-polygon rounded-sm"
+        className="absolute inset-0 p-4 flex flex-col clip-path-polygon"
         style={{
           backgroundColor: theme.colors.stickyBg,
           boxShadow: theme.shadows.sticky,
+          borderRadius: theme.borders.radius,
+          ...(theme.special?.cssClass === 'theme-glass' && {
+            backdropFilter: `blur(${theme.effects.glassBlur})`,
+          }),
         }}
       >
         <div 
@@ -44,8 +64,12 @@ export function TodoPanel({
         ></div>
 
         <h2 
-          className="font-hand text-3xl font-bold mb-4 mt-2 flex items-center gap-2"
-          style={{ color: theme.colors.stickyText }}
+          className="font-hand font-bold mb-4 mt-2 flex items-center gap-2"
+          style={{ 
+            color: theme.colors.stickyText,
+            fontFamily: theme.typography.handFont,
+            fontSize: '1.875rem',
+          }}
         >
           <span>To-Do</span>
           <div 
@@ -60,10 +84,12 @@ export function TodoPanel({
             value={newTodoText}
             onChange={(e) => onNewTodoChange(e.target.value)}
             placeholder="Add task..."
-            className="w-full bg-transparent border-b-2 px-1 py-1 font-hand text-xl focus:outline-none"
+            className="w-full bg-transparent border-b-2 px-1 py-1 font-hand focus:outline-none"
             style={{
               borderColor: `${theme.colors.stickyBorder}4d`,
               color: theme.colors.stickyText,
+              fontFamily: theme.typography.handFont,
+              fontSize: theme.typography.bodySize,
             }}
             onFocus={(e) => e.target.style.borderColor = theme.colors.stickyBorder}
             onBlur={(e) => e.target.style.borderColor = `${theme.colors.stickyBorder}4d`}
@@ -73,8 +99,12 @@ export function TodoPanel({
         <div className="flex-1 overflow-y-auto pr-1 paper-scroll">
           {todos.length === 0 && (
             <div 
-              className="text-center mt-10 opacity-40 font-hand text-xl -rotate-6"
-              style={{ color: theme.colors.stickyText }}
+              className="text-center mt-10 opacity-40 font-hand -rotate-6"
+              style={{ 
+                color: theme.colors.stickyText,
+                fontFamily: theme.typography.handFont,
+                fontSize: '1.25rem',
+              }}
             >
               Nothing to do yet!
             </div>

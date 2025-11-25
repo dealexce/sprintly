@@ -13,18 +13,27 @@ export function HeaderSection({ title, date }: HeaderSectionProps) {
     <div 
       className="h-16 flex items-center justify-between px-6 shrink-0"
       style={{
-        borderBottom: `2px solid ${theme.colors.border}`,
+        borderBottom: `${theme.borders.width} ${theme.borders.style} ${theme.colors.border}`,
         backgroundColor: theme.colors.headerBg,
       }}
     >
       <div>
         <h1 
-          className="font-mono text-3xl"
-          style={{ color: theme.colors.textPrimary }}
+          className="font-mono"
+          style={{ 
+            color: theme.colors.textPrimary,
+            fontFamily: theme.typography.headerFont,
+            fontSize: theme.typography.headerSize,
+            fontWeight: theme.typography.fontWeight,
+            letterSpacing: theme.typography.letterSpacing,
+          }}
         >{title}</h1>
         <p 
           className="text-xs font-mono tracking-widest uppercase"
-          style={{ color: theme.colors.textTertiary }}
+          style={{ 
+            color: theme.colors.textTertiary,
+            fontFamily: theme.typography.monoFont,
+          }}
         >
           {date}
         </p>

@@ -27,24 +27,70 @@ export function ThemeProvider({ children }: ThemeProviderProps) {
   useEffect(() => {
     sessionStorage.setItem(THEME_STORAGE_KEY, themeId);
     
-    // Apply theme colors as CSS custom properties
     const root = document.documentElement;
+    const body = document.body;
+    
+    // Apply theme colors as CSS custom properties
     Object.entries(theme.colors).forEach(([key, value]) => {
-      root.style.setProperty(`--color-${key}`, value);
+      root.style.setProperty(`--color-${key}`, value as string);
     });
     
     // Apply shadows
     Object.entries(theme.shadows).forEach(([key, value]) => {
-      root.style.setProperty(`--shadow-${key}`, value);
+      root.style.setProperty(`--shadow-${key}`, value as string);
     });
     
     // Apply patterns
     Object.entries(theme.patterns).forEach(([key, value]) => {
-      root.style.setProperty(`--pattern-${key}`, value);
+      if (value) root.style.setProperty(`--pattern-${key}`, value as string);
     });
     
-    // Apply background color to body
-    document.body.style.backgroundColor = theme.colors.background;
+    // Apply typography
+    Object.entries(theme.typography).forEach(([key, value]) => {
+      root.style.setProperty(`--typography-${key}`, value as string);
+    });
+    
+    // Apply effects
+    Object.entries(theme.effects).forEach(([key, value]) => {
+      root.style.setProperty(`--effect-${key}`, value as string);
+    });
+    
+    // Apply borders
+    Object.entries(theme.borders).forEach(([key, value]) => {
+      root.style.setProperty(`--border-${key}`, value as string);
+    });
+    
+    // Apply animations
+    Object.entries(theme.animations).forEach(([key, value]) => {
+      root.style.setProperty(`--animation-${key}`, value as string);
+    });
+    
+    // Apply spacing
+    Object.entries(theme.spacing).forEach(([key, value]) => {
+      root.style.setProperty(`--spacing-${key}`, String(value));
+    });
+    
+    // Apply background (support gradients)
+    if (theme.colors.background.includes('gradient')) {
+      body.style.background = theme.colors.background;
+      body.style.backgroundColor = '';
+    } else {
+      body.style.backgroundColor = theme.colors.background;
+      body.style.background = '';
+    }
+    
+    // Apply special theme class
+    body.className = 'text-slate-800 select-none';
+    if (theme.special?.cssClass) {
+      body.classList.add(theme.special.cssClass);
+    }
+    
+    // Apply custom styles
+    if (theme.special?.customStyles) {
+      Object.entries(theme.special.customStyles).forEach(([property, value]) => {
+        root.style.setProperty(`--custom-${property}`, value as string);
+      });
+    }
   }, [theme, themeId]);
 
   const setTheme = (newThemeId: string) => {

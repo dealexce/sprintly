@@ -17,6 +17,7 @@ interface Props {
   hasPrevSame: boolean;
   hasNextSame: boolean;
   isEraserActive: boolean;
+  activeMarkerColor?: string;
 }
 
 export const GridSlot: React.FC<Props> = ({ 
@@ -30,7 +31,8 @@ export const GridSlot: React.FC<Props> = ({
   onTodoClick,
   hasPrevSame,
   hasNextSame,
-  isEraserActive
+  isEraserActive,
+  activeMarkerColor
 }) => {
   const { theme } = useTheme();
   const { setNodeRef, isOver } = useDroppable({
@@ -56,7 +58,11 @@ export const GridSlot: React.FC<Props> = ({
       onMouseEnter={() => onMouseEnter(data.index)}
       onMouseOver={(e) => {
         if (!category || isEraserActive) {
-          e.currentTarget.style.backgroundColor = theme.colors.gridHover;
+          if (activeMarkerColor) {
+            e.currentTarget.style.backgroundColor = activeMarkerColor;
+          } else {
+            e.currentTarget.style.backgroundColor = theme.colors.gridHover;
+          }
         }
       }}
       onMouseOut={(e) => {
@@ -68,12 +74,16 @@ export const GridSlot: React.FC<Props> = ({
       {/* The Colored Ink Block */}
       {category && (
          <div className={clsx(
-             "absolute inset-y-1 inset-x-0 mix-blend-multiply bg-opacity-90 shadow-sm pointer-events-none transition-all duration-200",
+             "absolute inset-y-1 inset-x-0 shadow-sm pointer-events-none transition-all duration-200",
              `bg-${category.color}`,
              !hasPrevSame && "rounded-l-md left-0.5",
              !hasNextSame && "rounded-r-md right-0.5",
              isOver ? "brightness-125 scale-y-110 z-10" : ""
-         )}>
+         )}
+         style={{
+           opacity: theme.id === 'retroPC' ? '0.6' : '0.9',
+           mixBlendMode: theme.id === 'retroPC' ? 'normal' : 'multiply',
+         }}>
              {/* Texture overlay for marker feel */}
              <div className="absolute inset-0 opacity-20 bg-[url('https://www.transparenttextures.com/patterns/rough-paper.png')]"></div>
          </div>
@@ -113,8 +123,12 @@ export const GridSlot: React.FC<Props> = ({
               )}
               style={{
                 backgroundColor: theme.colors.tagBg,
-                border: `1px solid ${theme.colors.tagBorder}`,
+                border: `${theme.borders.width} ${theme.borders.style} ${theme.colors.tagBorder}`,
                 color: theme.colors.tagText,
+                fontFamily: theme.typography.handFont,
+                fontSize: '0.5625rem',
+                borderRadius: theme.borders.radius,
+                transition: `transform ${theme.animations.duration} ${theme.animations.easing}, box-shadow ${theme.animations.duration}`,
               }}
               onMouseEnter={(e) => {
                 if (isEraserActive) {

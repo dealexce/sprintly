@@ -4,19 +4,17 @@ import { getColorHex } from '../constants';
 export function getCursorStyle(tool: Tool, categories: Category[]): string {
   if (tool.type === 'eraser') {
     const svg = `
-      <svg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='%23ec4899' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'>
-        <path d='m2.9 20.4 2-12.8c.2-1.1.7-2 1.5-2.8 1.4-1.3 3.5-1.3 4.9 0l3.4 3c1.4 1.3 1.4 3.5 0 4.9l-10 10.4c-1 .9-2.5.6-3.1-.3l-1.9-1.9c-.3-.4-.5-.9-.4-1.5'/>
-        <path d='m12.3 8.8 2.6 2.5'/>
-        <path d='M7.7 13.6 5.1 11'/>
+      <svg width='24' height='24' viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'>
+        <path d='M216.001,211.833H120.6875l98.14258-98.1416a20.0237,20.0237,0,0,0-.001-28.28418L173.57422,40.15234a20.01987,20.01987,0,0,0-28.2832,0l-56.564,56.564-.00537.00439-.00439.00537-56.564,56.564a20.02163,20.02163,0,0,0,0,28.2832l37.08887,37.08789a4.00051,4.00051,0,0,0,2.82812,1.17188H216.001a4,4,0,0,0,0-8ZM150.94727,45.80859a12.0157,12.0157,0,0,1,16.9707,0l45.25488,45.25489a12.016,12.016,0,0,1,0,16.97168L159.43213,161.7749,97.20654,99.54932ZM109.37305,211.833H73.72754l-35.918-35.916a12.01392,12.01392,0,0,1,0-16.9707l53.74072-53.74072,62.22559,62.22558Z' fill='%23ec4899' stroke='white' stroke-width='12'/>
       </svg>`;
-    return `url("data:image/svg+xml,${encodeURIComponent(svg)}") 0 24, auto`;
+    return `url("data:image/svg+xml,${encodeURIComponent(svg)}") 12 12, auto`;
   } else if (tool.type === 'marker' && tool.categoryId) {
     const category = categories.find((c) => c.id === tool.categoryId);
     if (category) {
       const hex = getColorHex(category.color);
       const svg = `
         <svg xmlns='http://www.w3.org/2000/svg' width='20' height='20' viewBox='0 0 20 20'>
-          <circle cx='10' cy='10' r='8' fill='${encodeURIComponent(hex)}' stroke='white' stroke-width='2'/>
+          <circle cx='10' cy='10' r='8' fill='${hex}' stroke='white' stroke-width='2'/>
         </svg>`;
       return `url("data:image/svg+xml,${encodeURIComponent(svg)}") 10 10, auto`;
     }

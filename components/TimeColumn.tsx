@@ -14,6 +14,7 @@ interface TimeColumnProps {
   onMouseDownSlot: (index: number) => void;
   onMouseEnterSlot: (index: number) => void;
   onTodoTagClick: (todoId: string) => void;
+  activeMarkerColor?: string;
 }
 
 export function TimeColumn({
@@ -26,6 +27,7 @@ export function TimeColumn({
   onMouseDownSlot,
   onMouseEnterSlot,
   onTodoTagClick,
+  activeMarkerColor,
 }: TimeColumnProps) {
   const { theme } = useTheme();
   
@@ -52,7 +54,9 @@ export function TimeColumn({
             className="flex-1 text-center py-1 text-[10px] font-mono last:border-r-0"
             style={{
               color: theme.colors.timeLabelText,
-              borderRight: `1px solid ${theme.colors.borderLight}`,
+              borderRight: `${theme.borders.width} solid ${theme.colors.borderLight}`,
+              fontFamily: theme.typography.monoFont,
+              fontSize: '0.625rem',
             }}
           >
             :{min.toString().padStart(2, '0')}
@@ -78,12 +82,21 @@ export function TimeColumn({
               className="w-12 flex items-center justify-center text-[10px] font-bold font-mono select-none shrink-0"
               style={{
                 color: theme.colors.timeLabelText,
-                borderRight: `1px solid ${theme.colors.gridBorder}`,
+                borderRight: `${theme.borders.width} solid ${theme.colors.gridBorder}`,
                 backgroundColor: theme.colors.timeLabelBg,
+                fontFamily: theme.typography.monoFont,
+                fontSize: '0.625rem',
+                fontWeight: theme.typography.fontWeight,
               }}
             >
               {formatHour12(hour).split(' ')[0]}{' '}
-              <span className="text-[8px] ml-0.5" style={{ color: theme.colors.textTertiary }}>
+              <span 
+                className="text-[8px] ml-0.5" 
+                style={{ 
+                  color: theme.colors.textTertiary,
+                  fontFamily: theme.typography.monoFont,
+                }}
+              >
                 {hour < 12 ? 'AM' : 'PM'}
               </span>
             </div>
@@ -120,6 +133,7 @@ export function TimeColumn({
                     hasPrevSame={hasPrevSame}
                     hasNextSame={hasNextSame}
                     isEraserActive={tool.type === 'eraser'}
+                    activeMarkerColor={activeMarkerColor}
                   />
                 );
               })}
@@ -135,10 +149,6 @@ export function TimeColumn({
                   <div className="absolute inset-y-0 -left-px w-0.5 bg-red-500 shadow-[0_0_2px_rgba(239,68,68,0.5)]"></div>
                   <div className="absolute top-0 -left-[2.5px] w-1.5 h-1.5 bg-red-500 rounded-full -translate-y-1/2"></div>
                   <div className="absolute bottom-0 -left-[2.5px] w-1.5 h-1.5 bg-red-500 rounded-full translate-y-1/2"></div>
-                  <div className="absolute top-1/2 left-0 w-8 border-t-[1.5px] border-dashed border-red-500/70"></div>
-                  <div className="absolute top-1/2 left-8 -translate-y-1/2 bg-red-500 text-white text-[7px] font-bold px-1 py-px rounded-sm shadow-sm leading-tight">
-                    NOW
-                  </div>
                 </div>
               )}
             </div>
