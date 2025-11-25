@@ -16,21 +16,38 @@ import { INITIAL_CATEGORIES, formatTime, formatHour12, MARKER_COLORS, getColorHe
 import { DraggableTodo } from './components/DraggableTodo';
 import { GridSlot } from './components/GridSlot';
 
+// Session Storage Keys
+const STORAGE_KEYS = {
+  CATEGORIES: 'daySprintCategories',
+  TODOS: 'daySprintTodos',
+  GRID: 'daySprintGrid',
+};
+
 export default function App() {
   // --- State ---
-  const [categories, setCategories] = useState<Category[]>(INITIAL_CATEGORIES);
-  const [todos, setTodos] = useState<Todo[]>([]);
+  const [categories, setCategories] = useState<Category[]>(() => {
+    const stored = sessionStorage.getItem(STORAGE_KEYS.CATEGORIES);
+    return stored ? JSON.parse(stored) : INITIAL_CATEGORIES;
+  });
+  const [todos, setTodos] = useState<Todo[]>(() => {
+    const stored = sessionStorage.getItem(STORAGE_KEYS.TODOS);
+    return stored ? JSON.parse(stored) : [];
+  });
   const [newTodoText, setNewTodoText] = useState('');
   
   // Initialize grid: 24 hours * 4 slots
-  const [grid, setGrid] = useState<TimeSlotData[]>(() => 
-    Array.from({ length: TIME_SLOTS_COUNT }).map((_, i) => ({
+  const [grid, setGrid] = useState<TimeSlotData[]>(() => {
+    const stored = sessionStorage.getItem(STORAGE_KEYS.GRID);
+    if (stored) {
+      return JSON.parse(stored);
+    }
+    return Array.from({ length: TIME_SLOTS_COUNT }).map((_, i) => ({
       index: i,
       timeLabel: formatTime(i),
       categoryId: null,
       todoIds: [],
-    }))
-  );
+    }));
+  });
 
   const [tool, setTool] = useState<Tool>({ type: 'marker', categoryId: INITIAL_CATEGORIES[0].id });
   const [isDrawing, setIsDrawing] = useState(false);
@@ -39,6 +56,7 @@ export default function App() {
   // Current Time Tracking
   // We track minutes from start of day to calculate position in AM or PM column
   const [currentMinutes, setCurrentMinutes] = useState<number | null>(null);
+  const [previousSlotIndex, setPreviousSlotIndex] = useState<number | null>(null);
 
   // Category Editing
   const [editingNameId, setEditingNameId] = useState<string | null>(null);
@@ -53,6 +71,26 @@ export default function App() {
   );
 
   // --- Effects ---
+  // Save to session storage
+  useEffect(() => {
+    sessionStorage.setItem(STORAGE_KEYS.CATEGORIES, JSON.stringify(categories));
+  }, [categories]);
+
+  useEffect(() => {
+    sessionStorage.setItem(STORAGE_KEYS.TODOS, JSON.stringify(todos));
+  }, [todos]);
+
+  useEffect(() => {
+    sessionStorage.setItem(STORAGE_KEYS.GRID, JSON.stringify(grid));
+  }, [grid]);
+
+  // Request notification permission on mount
+  useEffect(() => {
+    if ('Notification' in window && Notification.permission === 'default') {
+      Notification.requestPermission();
+    }
+  }, []);
+
   useEffect(() => {
     const updateTime = () => {
       const now = new Date();
@@ -63,6 +101,40 @@ export default function App() {
     const interval = setInterval(updateTime, 60000); // Update every minute
     return () => clearInterval(interval);
   }, []);
+
+  // Notify on time slot category changes
+  useEffect(() => {
+    if (currentMinutes === null) return;
+
+    const currentSlotIndex = Math.floor(currentMinutes / 15);
+    const currentSlot = grid[currentSlotIndex];
+
+    // Check if we've transitioned to a new slot with a different category
+    if (previousSlotIndex !== null && previousSlotIndex !== currentSlotIndex) {
+      const previousSlot = grid[previousSlotIndex];
+      
+      // Notify if the new slot has a category and it's different from the previous
+      if (currentSlot.categoryId && currentSlot.categoryId !== previousSlot.categoryId) {
+        const category = categories.find(c => c.id === currentSlot.categoryId);
+        const todosInSlot = todos.filter(t => currentSlot.todoIds.includes(t.id));
+        
+        if (category && 'Notification' in window && Notification.permission === 'granted') {
+          const body = todosInSlot.length > 0
+            ? `Time for: ${category.name}\n${todosInSlot.map(t => `• ${t.text}`).join('\n')}`
+            : `Time for: ${category.name}`;
+          
+          new Notification('🕐 Action Period Started!', {
+            body,
+            icon: '/favicon.ico',
+            tag: 'time-slot-notification',
+            requireInteraction: false,
+          });
+        }
+      }
+    }
+
+    setPreviousSlotIndex(currentSlotIndex);
+  }, [currentMinutes, grid, categories, todos, previousSlotIndex]);
 
   useEffect(() => {
     window.addEventListener('mouseup', handleMouseUp);
@@ -335,7 +407,7 @@ export default function App() {
              {/* Header */}
              <div className="h-16 border-b-2 border-stone-200 flex items-center justify-between px-6 bg-white shrink-0">
                 <div>
-                  <h1 className="font-hand text-3xl text-stone-800 font-bold">Daily Plan</h1>
+                  <h1 className="font-mono text-3xl text-stone-800">day sprint</h1>
                   <p className="text-xs text-stone-400 font-mono tracking-widest uppercase">
                     {new Date().toLocaleDateString(undefined, { weekday: 'long', month: 'long', day: 'numeric' })}
                   </p>
