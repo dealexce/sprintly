@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>DaySculpt 3D Planner</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+      @import url('https://fonts.googleapis.com/css2?family=Kalam:wght@300;400;700&family=Inter:wght@400;500;600&display=swap');
+      
+      body {
+        font-family: 'Inter', sans-serif;
+        overflow: hidden;
+      }
+      
+      .font-hand {
+        font-family: 'Kalam', cursive;
+      }
+
+      /* Custom Scrollbar */
+      .paper-scroll::-webkit-scrollbar {
+        width: 6px;
+      }
+      .paper-scroll::-webkit-scrollbar-track {
+        background: transparent;
+      }
+      .paper-scroll::-webkit-scrollbar-thumb {
+        background-color: #d1d5db;
+        border-radius: 20px;
+      }
+      
+      .pattern-grid {
+        background-size: 40px 40px;
+        background-image:
+          linear-gradient(to right, rgba(0,0,0,0.05) 1px, transparent 1px),
+          linear-gradient(to bottom, rgba(0,0,0,0.05) 1px, transparent 1px);
+      }
+      
+      /* Wood grain simulation via gradient */
+      .bg-wood {
+        background-color: #8b5e3c;
+        background-image: radial-gradient(circle at 50% 30%, #a07048, #6f4527);
+      }
+
+      /* Paper thickness effect */
+      .paper-stack {
+        box-shadow: 
+          1px 1px 0 #e5e5e5,
+          2px 2px 0 #e5e5e5,
+          3px 3px 0 #e5e5e5,
+          4px 4px 0 #e5e5e5,
+          5px 5px 0 #e5e5e5,
+          0 20px 25px -5px rgba(0, 0, 0, 0.3), 
+          0 10px 10px -5px rgba(0, 0, 0, 0.2);
+      }
+    </style>
+  <script type="importmap">
+{
+  "imports": {
+    "lucide-react": "https://aistudiocdn.com/lucide-react@^0.554.0",
+    "react/": "https://aistudiocdn.com/react@^19.2.0/",
+    "react": "https://aistudiocdn.com/react@^19.2.0",
+    "react-dom/": "https://aistudiocdn.com/react-dom@^19.2.0/",
+    "clsx": "https://aistudiocdn.com/clsx@^2.1.1",
+    "@dnd-kit/core": "https://aistudiocdn.com/@dnd-kit/core@^6.3.1"
+  }
+}
+</script>
+</head>
+  <body class="bg-wood h-screen w-screen text-slate-800 select-none">
+    <div id="root"></div>
+  </body>
+</html>
