@@ -19,7 +19,7 @@ export function HeaderSection({ title, date }: HeaderSectionProps) {
     >
       <div className="flex items-center gap-3">
         <img 
-          src="/assets/logo-dark.svg" 
+          src="/logo-dark.svg" 
           alt="Logo" 
           className="h-10 w-8" 
           style={theme.logo}
