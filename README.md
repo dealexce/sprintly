@@ -1,4 +1,4 @@
-# Day Sprint
+# Sprintly
 
 > "Distraction is not the opposite of focus, but of traction." — Nir Eyal
 

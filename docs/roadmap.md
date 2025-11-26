@@ -1,4 +1,4 @@
-# Day Sprint - Product Roadmap
+# Sprintly - Product Roadmap
 
 ## 1. Core Architecture Enhancement
 

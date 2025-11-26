@@ -98,6 +98,10 @@ export interface Theme {
     gridGap: string;
     padding: string;
   };
+  logo?: {
+    filter?: string;
+    boxShadow?: string;
+  };
   special?: {
     cssClass?: string;
     customStyles?: Record<string, string>;
@@ -287,6 +291,9 @@ export const themes: Record<string, Theme> = {
       compact: true,
       gridGap: '1px',
       padding: '0.5rem',
+    },
+    logo: {
+      filter: 'brightness(0) saturate(100%) invert(75%) sepia(94%) saturate(3072%) hue-rotate(75deg) brightness(118%) contrast(119%) drop-shadow(0 0 10px rgba(0, 255, 0, 0.8)) drop-shadow(0 0 20px rgba(0, 255, 0, 0.5)) drop-shadow(0 0 30px rgba(0, 255, 0, 0.3))',
     },
     special: {
       cssClass: 'theme-retro-pc',

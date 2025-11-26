@@ -233,7 +233,7 @@ export default function App() {
               filter: `brightness(${theme.effects.brightness}) contrast(${theme.effects.contrast}) saturate(${theme.effects.saturate})`,
             }}
           >
-            <HeaderSection title="day sprint" date={currentDate} />
+            <HeaderSection title="sprintly" date={currentDate} />
 
             {/* Grid Content Container */}
             <div 
