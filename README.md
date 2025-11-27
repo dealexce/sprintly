@@ -6,6 +6,8 @@ A minimalism time-boxing board.
 
 Plan your day in 10 seconds and maintain traction toward what matters.
 
+https://sprintly.day/
+
 ## Run Locally
 
 **Prerequisites:** Node.js

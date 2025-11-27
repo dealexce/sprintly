@@ -148,6 +148,43 @@
 
 ---
 
+## 7. Keyboard Navigation & Shortcuts
+
+### 7.1 Keyboard Shortcuts for Tools
+**Description:** Add keyboard shortcuts to quickly select markers and tools without using the mouse. Initial shortcuts: [1]-[5] to select markers, Right-click to erase, [E] to select eraser.
+
+**Subtasks:**
+- [ ] Implement global keyboard event handler
+- [ ] Add number key shortcuts [1]-[5] for marker selection
+- [ ] Add [E] key shortcut for eraser tool selection
+- [ ] Add right-click context for quick erase functionality
+- [ ] Show keyboard hints in tool UI
+- [ ] Add visual feedback when shortcuts are triggered
+- [ ] *[AI] Add [Space] to toggle between current tool and eraser*
+- [ ] *[AI] Add [Ctrl/Cmd + Z] for undo and [Ctrl/Cmd + Y] for redo*
+- [ ] *[AI] Add [Tab] to cycle through markers*
+- [ ] *[AI] Add [Escape] to deselect current tool*
+- [ ] *[AI] Show on-screen keyboard shortcut cheat sheet (toggled with [?] or [F1])*
+
+### 7.2 Shortcut Customization
+**Description:** Allow users to customize keyboard shortcuts according to their preferences.
+
+**Dependencies:** Requires 7.1 (Keyboard Shortcuts for Tools)
+
+**Subtasks:**
+- [ ] Design settings UI for shortcut configuration
+- [ ] Build key binding management system
+- [ ] Implement conflict detection for duplicate shortcuts
+- [ ] Add validation for browser-reserved shortcuts
+- [ ] Save custom keybindings to user preferences
+- [ ] Add reset to defaults option
+- [ ] *[AI] Support modifier keys (Ctrl, Alt, Shift combinations)*
+- [ ] *[AI] Add preset profiles (Vim-style, VS Code-style, etc.)*
+- [ ] *[AI] Import/export custom shortcut configurations*
+- [ ] *[AI] Show warnings for potential accessibility issues*
+
+---
+
 ## Implementation Priority Recommendations
 
 ### Phase 1 - Foundation (Q1)
@@ -155,15 +192,17 @@
 2. Flexible Todo Placement (2.1)
 3. Drag to Move Functionality (2.2)
 4. Customizable Time Window (2.3)
+5. Keyboard Shortcuts for Tools (7.1)
 
-*[AI] Focus on core UX improvements first to establish the flexible framework*
+*[AI] Focus on core UX improvements first to establish the flexible framework. Keyboard shortcuts are included for accessibility and power-user efficiency.*
 
 ### Phase 2 - Expansion (Q2)
 1. Long-term Todo Calendar (3.1)
 2. Time Tracking Statistics (5.1)
 3. Daily Check-in System (6.1)
+4. Shortcut Customization (7.2)
 
-*[AI] Add planning and engagement features to increase user retention*
+*[AI] Add planning and engagement features to increase user retention. Shortcut customization follows after basic shortcuts are implemented and user feedback is gathered.*
 
 ### Phase 3 - Integration & Scale (Q3-Q4)
 1. Cloud Saving & Sync (4.1)
@@ -184,6 +223,9 @@
 - *Ensure keyboard navigation for all drag operations*
 - *Add screen reader support*
 - *Support high contrast themes*
+- *Avoid conflicts with browser/OS shortcuts*
+- *Provide alternatives for single-key shortcuts (require modifier keys option)*
+- *Ensure shortcuts work across different keyboard layouts*
 
 *[AI] **Mobile Support:***
 - *Create responsive layouts for smaller screens*
@@ -203,3 +245,6 @@
 - *Dark mode scheduling (auto-switch based on time)*
 - *Focus mode with distraction blocking*
 - *Weather and event-aware scheduling*
+- *Macro recording for repetitive keyboard actions*
+- *Command palette (Ctrl+P style) for all actions*
+- *Mouse gesture support as alternative to keyboard shortcuts*
