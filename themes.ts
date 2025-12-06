@@ -108,97 +108,138 @@ export interface Theme {
   };
 }
 
-export const themes: Record<string, Theme> = {
+type DeepPartial<T> = {
+  [P in keyof T]?: T[P] extends object ? DeepPartial<T[P]> : T[P];
+};
+
+type ThemeOverride = {
+  id: string;
+  name: string;
+  description: string;
+} & DeepPartial<Omit<Theme, 'id' | 'name' | 'description'>>;
+
+const defaultTheme: Theme = {
+  id: 'default',
+  name: 'Default',
+  description: 'Default theme',
+  colors: {
+    background: '#2a2a2a',
+    surface: '#fdfbf7',
+    surfaceSecondary: '#f8f6f2',
+    paperBg: '#fdfbf7',
+    
+    textPrimary: '#292524',
+    textSecondary: '#57534e',
+    textTertiary: '#a8a29e',
+    
+    border: '#d6d3d1',
+    borderLight: '#e7e5e4',
+    borderDark: '#a8a29e',
+    
+    gridBg: '#fdfbf7',
+    gridBorder: '#e7e5e4',
+    gridHover: 'rgba(0, 0, 0, 0.02)',
+    headerBg: '#ffffff',
+    
+    accent: '#3b82f6',
+    accentLight: '#93c5fd',
+    
+    stickyBg: '#fef3c7',
+    stickyText: '#292524',
+    stickyBorder: '#78716c',
+    stickyTape: 'rgba(255, 255, 255, 0.3)',
+    
+    tagBg: '#fffae5',
+    tagText: '#292524',
+    tagBorder: '#78716c',
+    
+    markerPanelBg: '#292524',
+    markerPanelBgInner: 'rgba(0, 0, 0, 0.5)',
+    markerPanelText: '#a8a29e',
+    markerPanelBorder: '#57534e',
+    markerBodyBg: '#292524',
+    markerBodyBgHover: '#3f3d3a',
+    
+    timeHeaderBg: 'rgba(250, 250, 249, 0.8)',
+    timeLabelBg: 'rgba(245, 245, 244, 0.5)',
+    timeLabelText: '#a8a29e',
+  },
+  typography: {
+    headerFont: "'Inter', sans-serif",
+    bodyFont: "'Inter', sans-serif",
+    monoFont: "'SF Mono', monospace",
+    handFont: "'Kalam', cursive",
+    headerSize: '1.875rem',
+    bodySize: '1rem',
+    letterSpacing: 'normal',
+    lineHeight: '1.5',
+    fontWeight: 'normal',
+  },
+  effects: {
+    blur: 'none',
+    brightness: '100%',
+    contrast: '100%',
+    saturate: '100%',
+    glassBlur: '0px',
+    glassOpacity: '1',
+  },
+  borders: {
+    radius: '0.125rem',
+    width: '1px',
+    style: 'solid',
+  },
+  shadows: {
+    paper: '1px 1px 0 #e5e5e5, 2px 2px 0 #e5e5e5, 3px 3px 0 #e5e5e5, 4px 4px 0 #e5e5e5, 5px 5px 0 #e5e5e5, 0 20px 25px -5px rgba(0, 0, 0, 0.3), 0 10px 10px -5px rgba(0, 0, 0, 0.2)',
+    sticky: 'inset 0 2px 4px rgba(0, 0, 0, 0.06)',
+    marker: '0 4px 6px -1px rgba(0, 0, 0, 0.5)',
+    elevation1: '0 1px 3px rgba(0, 0, 0, 0.12)',
+    elevation2: '0 4px 6px rgba(0, 0, 0, 0.16)',
+    elevation3: '0 10px 20px rgba(0, 0, 0, 0.19)',
+  },
+  patterns: {
+    grid: 'linear-gradient(to right, rgba(0,0,0,0.05) 1px, transparent 1px), linear-gradient(to bottom, rgba(0,0,0,0.05) 1px, transparent 1px)',
+  },
+  animations: {
+    duration: '200ms',
+    easing: 'ease-out',
+  },
+  spacing: {
+    compact: false,
+    gridGap: '0',
+    padding: '1rem',
+  },
+};
+
+function deepMerge<T extends object>(base: T, override: DeepPartial<T>): T {
+  const result = { ...base };
+  
+  for (const key in override) {
+    const overrideValue = override[key];
+    const baseValue = base[key];
+    
+    if (overrideValue !== undefined) {
+      if (typeof overrideValue === 'object' && !Array.isArray(overrideValue) && overrideValue !== null &&
+          typeof baseValue === 'object' && !Array.isArray(baseValue) && baseValue !== null) {
+        result[key] = deepMerge(baseValue, overrideValue);
+      } else {
+        result[key] = overrideValue as T[Extract<keyof T, string>];
+      }
+    }
+  }
+  
+  return result;
+}
+
+function createTheme(override: ThemeOverride): Theme {
+  return deepMerge(defaultTheme, override as DeepPartial<Theme>);
+}
+
+const themeOverrides: Record<string, ThemeOverride> = {
   warm: {
     id: 'warm',
     name: 'Warm Paper',
     description: 'Classic warm paper aesthetic with handwritten charm',
-    colors: {
-      background: '#2a2a2a',
-      surface: '#fdfbf7',
-      surfaceSecondary: '#f8f6f2',
-      paperBg: '#fdfbf7',
-      
-      textPrimary: '#292524',
-      textSecondary: '#57534e',
-      textTertiary: '#a8a29e',
-      
-      border: '#d6d3d1',
-      borderLight: '#e7e5e4',
-      borderDark: '#a8a29e',
-      
-      gridBg: '#fdfbf7',
-      gridBorder: '#e7e5e4',
-      gridHover: 'rgba(0, 0, 0, 0.02)',
-      headerBg: '#ffffff',
-      
-      accent: '#3b82f6',
-      accentLight: '#93c5fd',
-      
-      stickyBg: '#fef3c7',
-      stickyText: '#292524',
-      stickyBorder: '#78716c',
-      stickyTape: 'rgba(255, 255, 255, 0.3)',
-      
-      tagBg: '#fffae5',
-      tagText: '#292524',
-      tagBorder: '#78716c',
-      
-      markerPanelBg: '#292524',
-      markerPanelBgInner: 'rgba(0, 0, 0, 0.5)',
-      markerPanelText: '#a8a29e',
-      markerPanelBorder: '#57534e',
-      markerBodyBg: '#292524',
-      markerBodyBgHover: '#3f3d3a',
-      
-      timeHeaderBg: 'rgba(250, 250, 249, 0.8)',
-      timeLabelBg: 'rgba(245, 245, 244, 0.5)',
-      timeLabelText: '#a8a29e',
-    },
-    typography: {
-      headerFont: "'Inter', sans-serif",
-      bodyFont: "'Inter', sans-serif",
-      monoFont: "'SF Mono', monospace",
-      handFont: "'Kalam', cursive",
-      headerSize: '1.875rem',
-      bodySize: '1rem',
-      letterSpacing: 'normal',
-      lineHeight: '1.5',
-      fontWeight: 'normal',
-    },
-    effects: {
-      blur: 'none',
-      brightness: '100%',
-      contrast: '100%',
-      saturate: '100%',
-      glassBlur: '0px',
-      glassOpacity: '1',
-    },
-    borders: {
-      radius: '0.125rem',
-      width: '1px',
-      style: 'solid',
-    },
-    shadows: {
-      paper: '1px 1px 0 #e5e5e5, 2px 2px 0 #e5e5e5, 3px 3px 0 #e5e5e5, 4px 4px 0 #e5e5e5, 5px 5px 0 #e5e5e5, 0 20px 25px -5px rgba(0, 0, 0, 0.3), 0 10px 10px -5px rgba(0, 0, 0, 0.2)',
-      sticky: 'inset 0 2px 4px rgba(0, 0, 0, 0.06)',
-      marker: '0 4px 6px -1px rgba(0, 0, 0, 0.5)',
-      elevation1: '0 1px 3px rgba(0, 0, 0, 0.12)',
-      elevation2: '0 4px 6px rgba(0, 0, 0, 0.16)',
-      elevation3: '0 10px 20px rgba(0, 0, 0, 0.19)',
-    },
-    patterns: {
-      grid: 'linear-gradient(to right, rgba(0,0,0,0.05) 1px, transparent 1px), linear-gradient(to bottom, rgba(0,0,0,0.05) 1px, transparent 1px)',
-    },
-    animations: {
-      duration: '200ms',
-      easing: 'ease-out',
-    },
-    spacing: {
-      compact: false,
-      gridGap: '0',
-      padding: '1rem',
-    },
+    // Warm theme uses all default values, no overrides needed
   },
   
   retroPC: {
@@ -259,17 +300,13 @@ export const themes: Record<string, Theme> = {
       fontWeight: 'bold',
     },
     effects: {
-      blur: 'none',
       brightness: '110%',
       contrast: '120%',
       saturate: '150%',
-      glassBlur: '0px',
-      glassOpacity: '1',
     },
     borders: {
       radius: '0',
       width: '2px',
-      style: 'solid',
     },
     shadows: {
       paper: '0 0 20px rgba(0, 255, 0, 0.3), inset 0 0 60px rgba(0, 255, 0, 0.05)',
@@ -304,6 +341,10 @@ export const themes: Record<string, Theme> = {
     },
   }
 };
+
+export const themes: Record<string, Theme> = Object.fromEntries(
+  Object.entries(themeOverrides).map(([key, override]) => [key, createTheme(override)])
+);
 
 export const MARKER_COLORS = [
   'slate-600',
