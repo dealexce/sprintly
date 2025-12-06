@@ -64,10 +64,7 @@ export const DraggableTodo: React.FC<Props> = ({ todo, onDelete, onToggle, onUpd
         transition: `all ${theme.animations.duration} ${theme.animations.easing}`,
       }}
       className={clsx(
-        "group flex items-start gap-2 p-2 mb-2 font-hand border-b border-dotted",
-        isDragging 
-          ? "rotate-2 shadow-xl scale-105 cursor-grabbing z-50 rounded" 
-          : "",
+        "group flex items-start gap-2 p-2 mb-2 border-b border-dotted",
         !isEditing && "cursor-grab touch-none"
       )}
       {...attributes}
@@ -151,10 +148,10 @@ export const DraggableTodo: React.FC<Props> = ({ todo, onDelete, onToggle, onUpd
             e.stopPropagation();
             onDelete(todo.id);
         }}
-        className="mt-1.5 opacity-0 group-hover:opacity-100 transition-opacity flex-shrink-0 relative z-10 cursor-pointer"
+        className="mt-1.5 opacity-0 group-hover:opacity-100 transition-opacity"
         style={{ color: theme.colors.textTertiary }}
         onMouseEnter={(e) => {
-          e.currentTarget.style.color = '#f87171';
+          e.currentTarget.style.color = theme.colors.delete;
         }}
         onMouseLeave={(e) => {
           e.currentTarget.style.color = theme.colors.textTertiary;

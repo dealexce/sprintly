@@ -42,40 +42,22 @@ export function TodoPanel({
         }
       }}
     >
-      <div className="absolute inset-0 bg-black/20 blur-md translate-y-2 translate-x-2 rounded-sm"></div>
-
       <div 
         className="absolute inset-0 p-4 flex flex-col clip-path-polygon"
         style={{
           backgroundColor: theme.colors.stickyBg,
           boxShadow: theme.shadows.sticky,
-          borderRadius: theme.borders.radius,
-          ...(theme.special?.cssClass === 'theme-glass' && {
-            backdropFilter: `blur(${theme.effects.glassBlur})`,
-          }),
+          borderRadius: theme.borders.radius
         }}
       >
-        <div 
-          className="absolute -top-3 left-1/2 -translate-x-1/2 w-24 h-8 backdrop-blur-sm transform -rotate-1 shadow-sm z-20"
-          style={{
-            backgroundColor: theme.colors.stickyTape,
-            border: `1px solid ${theme.colors.stickyTape}`,
-          }}
-        ></div>
-
-        <h2 
-          className="font-hand font-bold mb-4 mt-2 flex items-center gap-2"
+        <h2
           style={{ 
             color: theme.colors.stickyText,
             fontFamily: theme.typography.handFont,
-            fontSize: '1.875rem',
+            fontSize: theme.typography.todoTitleSize,
           }}
         >
           <span>To-Do</span>
-          <div 
-            className="h-px flex-1"
-            style={{ backgroundColor: `${theme.colors.stickyText}1a` }}
-          ></div>
         </h2>
 
         <form onSubmit={onAddTodo} className="mb-4 shrink-0">
@@ -84,7 +66,7 @@ export function TodoPanel({
             value={newTodoText}
             onChange={(e) => onNewTodoChange(e.target.value)}
             placeholder="Add task..."
-            className="w-full bg-transparent border-b-2 px-1 py-1 font-hand focus:outline-none"
+            className="w-full bg-transparent border-b-2 px-1 py-1 focus:outline-none"
             style={{
               borderColor: `${theme.colors.stickyBorder}4d`,
               color: theme.colors.stickyText,
@@ -99,11 +81,11 @@ export function TodoPanel({
         <div className="flex-1 overflow-y-auto pr-1 paper-scroll">
           {todos.length === 0 && (
             <div 
-              className="text-center mt-10 opacity-40 font-hand -rotate-6"
+              className="text-center mt-10 opacity-40 -rotate-6"
               style={{ 
                 color: theme.colors.stickyText,
                 fontFamily: theme.typography.handFont,
-                fontSize: '1.25rem',
+                fontSize: theme.typography.todoEmptySize,
               }}
             >
               Nothing to do yet!

@@ -29,6 +29,9 @@ export interface Theme {
     accent: string;
     accentLight: string;
     
+    // Actions
+    delete: string;
+    
     // Sticky Note (Todo Panel)
     stickyBg: string;
     stickyText: string;
@@ -60,6 +63,8 @@ export interface Theme {
     handFont: string;
     headerSize: string;
     bodySize: string;
+    todoTitleSize: string;
+    todoEmptySize: string;
     letterSpacing: string;
     lineHeight: string;
     fontWeight: string;
@@ -144,6 +149,9 @@ const defaultTheme: Theme = {
     accent: '#3b82f6',
     accentLight: '#93c5fd',
     
+    // Actions
+    delete: '#f87171',
+    
     stickyBg: '#fef3c7',
     stickyText: '#292524',
     stickyBorder: '#78716c',
@@ -171,6 +179,8 @@ const defaultTheme: Theme = {
     handFont: "'Kalam', cursive",
     headerSize: '1.875rem',
     bodySize: '1rem',
+    todoTitleSize: '1.875rem',
+    todoEmptySize: '1.25rem',
     letterSpacing: 'normal',
     lineHeight: '1.5',
     fontWeight: 'normal',
@@ -267,6 +277,8 @@ const themeOverrides: Record<string, ThemeOverride> = {
       
       accent: '#00ffff',
       accentLight: '#00cccc',
+      
+      delete: '#ff0000',
       
       stickyBg: '#1a1a00',
       stickyText: '#ffff00',
