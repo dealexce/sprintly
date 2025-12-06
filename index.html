@@ -128,13 +128,6 @@
         0%, 100% { opacity: 0.3; }
         50% { opacity: 0.6; }
       }
-
-      /* SVG filters for sketchy theme */
-      svg {
-        position: absolute;
-        width: 0;
-        height: 0;
-      }
     </style>
   <script type="importmap">
 {
@@ -150,16 +143,6 @@
 </script>
 </head>
   <body class="text-slate-800 select-none">
-    <!-- SVG Filters -->
-    <svg>
-      <defs>
-        <filter id="rough">
-          <feTurbulence type="fractalNoise" baseFrequency="0.05" numOctaves="2" result="noise" />
-          <feDisplacementMap in="SourceGraphic" in2="noise" scale="2" xChannelSelector="R" yChannelSelector="G" />
-        </filter>
-      </defs>
-    </svg>
-    
     <div id="root"></div>
     <script type="module" src="/index.tsx"></script>
   </body>

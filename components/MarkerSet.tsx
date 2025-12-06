@@ -95,7 +95,7 @@ export function MarkerSet({
               e.currentTarget.style.backgroundColor = theme.colors.markerBodyBg;
             }}
           >
-            <Plus size={16} /> +
+            <Plus size={16} />
           </button>
         </div>
 
@@ -213,7 +213,7 @@ export function MarkerSet({
                             e.currentTarget.style.color = '#ff6b6b';
                           }}
                         >
-                          <X size={12} /> ×
+                          <X size={12} />
                         </button>
                       )}
                     </div>

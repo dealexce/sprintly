@@ -2,7 +2,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { useDraggable } from '@dnd-kit/core';
 import { Todo } from '../types';
-import { Trash2, Square, CheckSquare } from 'lucide-react';
+import { Square, CheckSquare, X } from 'lucide-react';
 import { clsx } from 'clsx';
 import { useTheme } from '../contexts/ThemeContext';
 
@@ -160,7 +160,7 @@ export const DraggableTodo: React.FC<Props> = ({ todo, onDelete, onToggle, onUpd
           e.currentTarget.style.color = theme.colors.textTertiary;
         }}
       >
-        <Trash2 size={14} />
+        <X size={14} />
       </button>
     </div>
   );
