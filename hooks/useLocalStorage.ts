@@ -7,6 +7,12 @@ interface VersionedData<T> {
   data: T;
 }
 
+export const STORAGE_KEYS = {
+  CATEGORIES: 'daySprintCategories',
+  TODOS: 'daySprintTodos',
+  GRID: 'daySprintGrid',
+};
+
 export function useLocalStorage<T>(key: string, initialValue: T) {
   const [value, setValue] = useState<T>(() => {
     try {

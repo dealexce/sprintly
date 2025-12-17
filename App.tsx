@@ -4,11 +4,10 @@ import { TimeSlotData, Tool, TIME_SLOTS_COUNT } from './types';
 import { INITIAL_CATEGORIES, formatTime } from './constants';
 
 // Hooks
-import { useLocalStorage } from './hooks/useLocalStorage';
+import { useLocalStorage, STORAGE_KEYS } from './hooks/useLocalStorage';
 import { useCurrentTime } from './hooks/useCurrentTime';
 import { useNotifications } from './hooks/useNotifications';
 import { useDragAndDrop } from './hooks/useDragAndDrop';
-import { useTheme } from './contexts/ThemeContext';
 
 // Utils
 import { paintSlot, removeTodoFromAllSlots, clearCategoryFromGrid } from './utils/gridOperations';
@@ -23,21 +22,15 @@ import { TimeGrid } from './components/TimeGrid';
 import { TodoPanel } from './components/TodoPanel';
 import { EraserTool } from './components/EraserTool';
 import { MarkerSet } from './components/MarkerSet';
-import { ThemeSwitch } from './components/ThemeSwitch';
 
 // Session Storage Keys
-const STORAGE_KEYS = {
-  CATEGORIES: 'daySprintCategories',
-  TODOS: 'daySprintTodos',
-  GRID: 'daySprintGrid',
-};
+
 
 export default function App() {
-  const { theme } = useTheme();
   
   // --- State Management with Custom Hooks ---
   const [categories, setCategories] = useLocalStorage(STORAGE_KEYS.CATEGORIES, INITIAL_CATEGORIES);
-  const [todos, setTodos] = useLocalStorage(STORAGE_KEYS.TODOS, []);
+  
   const [grid, setGrid] = useLocalStorage(STORAGE_KEYS.GRID, 
     Array.from({ length: TIME_SLOTS_COUNT }).map((_, i) => ({
       index: i,
@@ -58,7 +51,7 @@ export default function App() {
 
   // Custom Hooks
   const currentMinutes = useCurrentTime();
-  useNotifications(currentMinutes, grid, categories, todos);
+  useNotifications(currentMinutes, grid, categories, []);
   const { activeDragTodo, handleDragStart, handleDragEnd } = useDragAndDrop(grid, setGrid);
 
   // --- Sensors ---
@@ -98,27 +91,6 @@ export default function App() {
     if (isDrawing) handlePaintSlot(index);
   };
 
-  // --- Todo Management ---
-  const handleAddTodo = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!newTodoText.trim()) return;
-    setTodos((prev) => [...prev, createNewTodo(newTodoText)]);
-    setNewTodoText('');
-  };
-
-  const handleUpdateTodo = (id: string, text: string) => {
-    setTodos((prev) => updateTodoText(prev, id, text));
-  };
-
-  const handleToggleTodo = (id: string) => {
-    setTodos((prev) => toggleTodoCompleted(prev, id));
-  };
-
-  const handleDeleteTodo = (id: string) => {
-    setTodos((prev) => deleteTodoUtil(prev, id));
-    setGrid((prev) => removeTodoFromAllSlots(prev, id));
-  };
-
   // --- Category Management ---
   const handleAddCategory = () => {
     const newCat = createNewCategory();
@@ -140,8 +112,8 @@ export default function App() {
     }
   };
 
-  const handleSaveCategoryName = (id: string) => {
-    setCategories((prev) => updateCategoryName(prev, id, tempCatName));
+  const handleSaveCategoryName = (id: string, value: string) => {
+    setCategories((prev) => updateCategoryName(prev, id, value));
     setEditingNameId(null);
   };
 
@@ -207,56 +179,22 @@ export default function App() {
   return (
     <DndContext sensors={sensors} onDragStart={handleDragStart} onDragEnd={handleDragEnd}>
       <div
-        className="flex h-screen w-screen overflow-hidden gap-8 items-center justify-center relative"
+        className="flex h-screen w-screen overflow-hidden 
+        gap-8 p-4 items-center justify-center relative
+        bg-gray-800"
         style={{ 
           cursor: cursorStyle,
-          padding: theme.spacing.padding,
-          fontFamily: theme.typography.bodyFont,
-          fontSize: theme.typography.bodySize,
-          transition: `all ${theme.animations.duration} ${theme.animations.easing}`,
-          backgroundColor: theme.colors.background,
         }}
       >
-        {/* Theme Switcher - Floating in top right */}
-        <div className="absolute top-4 right-4 z-50">
-          <ThemeSwitch />
-        </div>
-
         {/* --- LEFT PANEL: DAILY PLANNER --- */}
-        <div className="h-full flex-1 max-w-5xl relative z-10 flex flex-col">
-          <div 
-            className="h-full paper-stack flex flex-col overflow-hidden relative"
-            style={{ 
-              backgroundColor: theme.colors.paperBg,
-              border: `${theme.borders.width} ${theme.borders.style} ${theme.colors.border}`,
-              borderRadius: theme.borders.radius,
-              filter: `brightness(${theme.effects.brightness}) contrast(${theme.effects.contrast}) saturate(${theme.effects.saturate})`,
-            }}
-          >
-            <HeaderSection title="sprintly" date={currentDate} />
-
-            {/* Grid Content Container */}
-            <div 
-              className="flex-1 overflow-hidden flex flex-col relative"
-              style={{ 
-                backgroundColor: theme.colors.gridBg,
-              }}
-            >
-              <div className="absolute inset-0 pattern-grid opacity-30 pointer-events-none mix-blend-multiply"></div>
-              {theme.patterns.texture && (
-                <div 
-                  className="absolute inset-0 pointer-events-none" 
-                  style={{ 
-                    backgroundImage: theme.patterns.texture,
-                    opacity: 0.5,
-                  }}
-                ></div>
-              )}
-
+        <div className="h-full paper-stack max-w-5xl flex-1 relative flex flex-col bg-white">
+          <HeaderSection title="sprintly" date={currentDate} />
+          {/* Grid Content Container */}
+          <div className="h-full flex-1 flex">
               <TimeGrid
                 grid={grid}
                 categories={categories}
-                todos={todos}
+                todos={[]}
                 tool={tool}
                 currentMinutes={currentMinutes}
                 onMouseDownSlot={handleMouseDownSlot}
@@ -264,23 +202,12 @@ export default function App() {
                 onTodoTagClick={handleTodoTagClick}
                 activeMarkerColor={activeMarkerColor}
               />
-            </div>
           </div>
         </div>
 
         {/* --- RIGHT PANEL: TOOLS --- */}
-        <div 
-          className="flex flex-col w-80 h-full z-20 py-4"
-          style={{ gap: theme.spacing.gridGap || '1rem' }}
-        >
+        <div className="h-full flex flex-col w-1/6 z-20 py-4 gap-4">
           <TodoPanel
-            todos={todos}
-            newTodoText={newTodoText}
-            onNewTodoChange={setNewTodoText}
-            onAddTodo={handleAddTodo}
-            onDeleteTodo={handleDeleteTodo}
-            onToggleTodo={handleToggleTodo}
-            onUpdateTodo={handleUpdateTodo}
           />
 
           <EraserTool
@@ -299,7 +226,6 @@ export default function App() {
             onDeleteCategory={handleDeleteCategory}
             onStartEditName={handleStartEditName}
             onSaveName={handleSaveCategoryName}
-            onCancelEditName={() => setEditingNameId(null)}
             onNameChange={setTempCatName}
             onToggleColorPicker={handleToggleColorPicker}
             onSelectColor={handleUpdateCategoryColor}
@@ -309,15 +235,8 @@ export default function App() {
         <DragOverlay>
           {activeDragTodo ? (
             <div 
-              className="w-48 p-2 shadow-2xl opacity-90 cursor-grabbing font-hand text-sm"
-              style={{
-                backgroundColor: theme.colors.tagBg,
-                border: `${theme.borders.width} ${theme.borders.style} ${theme.colors.tagBorder}`,
-                color: theme.colors.tagText,
-                borderRadius: theme.borders.radius,
-                transform: 'rotate(3deg)',
-                fontFamily: theme.typography.handFont,
-              }}
+              className="w-48 p-2 shadow-2xl opacity-90 cursor-grabbing font-hand text-sm
+              bg-amber-100 border rotate-3"
             >
               {activeDragTodo.text}
             </div>

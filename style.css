@@ -1,0 +1,7 @@
+@import "tailwindcss";
+
+@theme {
+    --font-hand: 'Kalam', cursive;
+    --color-primary: oklch(100% 0 0);
+    --color-secondary: oklch(20.5% 0 0);
+}

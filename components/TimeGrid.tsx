@@ -26,18 +26,12 @@ export function TimeGrid({
   onTodoTagClick,
   activeMarkerColor,
 }: TimeGridProps) {
-  const { theme } = useTheme();
   const amHours = Array.from({ length: 12 }, (_, i) => i);
   const pmHours = Array.from({ length: 12 }, (_, i) => i + 12);
 
   return (
-    <div className="flex-1 flex overflow-hidden">
-      {/* AM Column */}
-      <div 
-        className="flex-1 flex flex-col border-r-4 border-double"
-        style={{ borderColor: `${theme.colors.gridBorder}80` }}
-      >
-        <TimeColumn
+    <div className="flex-1 flex">
+      <TimeColumn
           hours={amHours}
           grid={grid}
           categories={categories}
@@ -48,11 +42,8 @@ export function TimeGrid({
           onMouseEnterSlot={onMouseEnterSlot}
           onTodoTagClick={onTodoTagClick}
           activeMarkerColor={activeMarkerColor}
-        />
-      </div>
-      {/* PM Column */}
-      <div className="flex-1 flex flex-col">
-        <TimeColumn
+      />
+      <TimeColumn
           hours={pmHours}
           grid={grid}
           categories={categories}
@@ -64,7 +55,6 @@ export function TimeGrid({
           onTodoTagClick={onTodoTagClick}
           activeMarkerColor={activeMarkerColor}
         />
-      </div>
     </div>
   );
 }

@@ -48,12 +48,9 @@ export const GridSlot: React.FC<Props> = ({
       ref={setNodeRef}
       className={clsx(
         "flex-1 relative group select-none",
-        !hasNextSame && "last:border-r-0",
+        !hasNextSame && "border-r-1",
         (!category || isEraserActive) && "transition-colors"
       )}
-      style={{
-        borderRight: !hasNextSame ? `1px solid ${theme.colors.gridBorder}` : 'none',
-      }}
       onMouseDown={(e) => { e.preventDefault(); onMouseDown(data.index); }}
       onMouseEnter={() => onMouseEnter(data.index)}
       onMouseOver={(e) => {

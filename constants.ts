@@ -37,12 +37,6 @@ export const formatTime = (index: number): string => {
   return `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}`;
 };
 
-export const formatHour12 = (hourIndex: number): string => {
-  const h = hourIndex;
-  const ampm = h >= 12 ? 'PM' : 'AM';
-  const h12 = h % 12 || 12;
-  return `${h12} ${ampm}`;
-};
 
 export const getTailwindColorValue = (colorName: string) => {
     return `var(--color-${colorName})`;
