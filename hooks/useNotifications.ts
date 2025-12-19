@@ -24,8 +24,8 @@ export function useNotifications(
     if (previousSlotIndex !== null && previousSlotIndex !== currentSlotIndex) {
       const previousSlot = grid[previousSlotIndex];
 
-      if (currentSlot.categoryId && currentSlot.categoryId !== previousSlot.categoryId) {
-        const category = categories.find((c) => c.id === currentSlot.categoryId);
+      if (currentSlot.markerId && currentSlot.markerId !== previousSlot.markerId) {
+        const category = categories.find((c) => c.id === currentSlot.markerId);
         const todosInSlot = todos.filter((t) => currentSlot.todoIds.includes(t.id));
 
         if (category && 'Notification' in window && Notification.permission === 'granted') {

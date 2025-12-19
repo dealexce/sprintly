@@ -1,43 +1,23 @@
 import React from 'react';
-import { Category, TimeSlotData, Todo, Tool } from '../types';
-import { formatHour12 } from '../constants';
+import { GRID_INFO } from '@/stores/gridStore';
 import { GridSlot } from './GridSlot';
-import { useTheme } from '../contexts/ThemeContext';
+import dayjs from 'dayjs';
 
 interface TimeColumnProps {
   hours: number[];
-  grid: TimeSlotData[];
-  categories: Category[];
-  todos: Todo[];
-  tool: Tool;
-  currentMinutes: number | null;
-  onMouseDownSlot: (index: number) => void;
-  onMouseEnterSlot: (index: number) => void;
-  onTodoTagClick: (todoId: string) => void;
-  activeMarkerColor?: string;
 }
 
 export function TimeColumn({
-  hours,
-  grid,
-  categories,
-  todos,
-  tool,
-  currentMinutes,
-  onMouseDownSlot,
-  onMouseEnterSlot,
-  onTodoTagClick,
-  activeMarkerColor,
-}: TimeColumnProps) {
-  
+  hours }: TimeColumnProps) {
+  const minutes = Array.from({ length: 60 / GRID_INFO.SLOT_INTERVAL_MINUTES }, (_, i) => i * GRID_INFO.SLOT_INTERVAL_MINUTES);
   return (
     <div className="flex-1 flex flex-col relative text-neutral-400 text-[10px] font-mono">
       {/* Column Headers (Minutes) */}
       <div className="flex border-b bg-neutral-50">
         {/* Empty corner cell */}
-        <div className="w-12 border-r"/>
+        <div className="w-12 border-r" />
         {/* Minute Labels */}
-        {[0, 15, 30, 45].map((min) => (
+        {minutes.map((min) => (
           <div
             key={min}
             className="flex-1 text-center py-1 border-r"
@@ -49,12 +29,9 @@ export function TimeColumn({
 
       {/* Rows */}
       {hours.map((hour) => {
-        const isCurrentHour =
-          currentMinutes !== null && Math.floor(currentMinutes / 60) === hour;
-
+        const currentTime = dayjs();
         return (
-          <div
-            key={hour}
+          <div 
             className="flex-1 flex min-h-2 border-b"
           >
             {/* Time Label */}
@@ -64,47 +41,18 @@ export function TimeColumn({
 
             {/* Slot Container */}
             <div className="flex-1 flex relative">
-              {/* 4 Quarter Slots */}
-              {[0, 1, 2, 3].map((q) => {
-                const index = hour * 4 + q;
-                const slot = grid[index];
-                const prevSlot = grid[index - 1];
-                const nextSlot = grid[index + 1];
-
-                const isCategoryStart =
-                  slot.categoryId !== null &&
-                  (index === 0 || prevSlot?.categoryId !== slot.categoryId);
-
-                const hasPrevSame = prevSlot?.categoryId === slot.categoryId;
-                const hasNextSame = nextSlot?.categoryId === slot.categoryId;
-
+              {minutes.map((_, seg) => {
                 return (
-                  <GridSlot
-                    key={index}
-                    data={slot}
-                    category={categories.find((c) => c.id === slot.categoryId)}
-                    assignedTodos={todos.filter((t) =>
-                      slot.todoIds.includes(t.id)
-                    )}
-                    prevTodoIds={prevSlot ? prevSlot.todoIds : []}
-                    isCategoryStart={isCategoryStart}
-                    onMouseDown={onMouseDownSlot}
-                    onMouseEnter={onMouseEnterSlot}
-                    onTodoClick={onTodoTagClick}
-                    hasPrevSame={hasPrevSame}
-                    hasNextSame={hasNextSame}
-                    isEraserActive={tool.type === 'eraser'}
-                    activeMarkerColor={activeMarkerColor}
-                  />
+                  <GridSlot hour={hour} seg={seg} />
                 );
               })}
 
               {/* Vertical Time Cursor */}
-              {isCurrentHour && currentMinutes !== null && (
+              { currentTime.hour() === hour && (
                 <div
                   className="absolute top-0 bottom-0 z-40 pointer-events-none"
                   style={{
-                    left: `${((currentMinutes % 60) / 60) * 100}%`,
+                    left: `${((currentTime.minute() % 60) / 60) * 100}%`,
                   }}
                 >
                   <div className="absolute inset-y-0 -left-px w-0.5 bg-red-500 shadow-[0_0_2px_rgba(239,68,68,0.5)]"></div>

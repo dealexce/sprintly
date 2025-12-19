@@ -25,17 +25,17 @@ export function useDragAndDrop(
       const slotIndex = parseInt(overId.replace('slot-', ''), 10);
       const targetSlot = grid[slotIndex];
 
-      if (targetSlot.categoryId) {
-        const targetCatId = targetSlot.categoryId;
+      if (targetSlot.markerId) {
+        const targetCatId = targetSlot.markerId;
         const todoId = active.id as string;
 
         // Flood fill contiguous block
         let start = slotIndex;
-        while (start > 0 && grid[start - 1].categoryId === targetCatId) {
+        while (start > 0 && grid[start - 1].markerId === targetCatId) {
           start--;
         }
         let end = slotIndex;
-        while (end < TIME_SLOTS_COUNT - 1 && grid[end + 1].categoryId === targetCatId) {
+        while (end < TIME_SLOTS_COUNT - 1 && grid[end + 1].markerId === targetCatId) {
           end++;
         }
 

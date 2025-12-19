@@ -1,41 +1,19 @@
 import React, { useState } from 'react';
 import { Plus, X } from 'lucide-react';
 import { clsx } from 'clsx';
-import { Category, Tool } from '../types';
-import { MARKER_COLORS } from '../constants';
-import { useTheme } from '../contexts/ThemeContext';
 import SpanInput from './common/SpanInput';
+import { useToolStore } from '@/stores/toolStore';
+import { useMarkerStore } from '@/stores/markerStore';
 
-interface MarkerSetProps {
-  categories: Category[];
-  tool: Tool;
-  editingNameId: string | null;
-  editingColorId: string | null;
-  tempCatName: string;
-  onAddCategory: () => void;
-  onSelectCategory: (id: string) => void;
-  onDeleteCategory: (id: string, e: React.MouseEvent) => void;
-  onStartEditName: (id: string, name: string) => void;
-  onSaveName: (id: string, value: string) => void;
-  onNameChange: (name: string) => void;
-  onToggleColorPicker: (id: string) => void;
-  onSelectColor: (id: string, color: string) => void;
-}
+export function MarkerSet() {
 
-export function MarkerSet({
-  categories,
-  tool,
-  editingNameId,
-  editingColorId,
-  onAddCategory,
-  onSelectCategory,
-  onDeleteCategory,
-  onStartEditName,
-  onSaveName,
-  onNameChange,
-  onToggleColorPicker,
-  onSelectColor,
-}: MarkerSetProps) {
+  const tool = useToolStore((state) => state.activeTool);
+  const setTool = useToolStore((state) => state.setTool);
+  const categoryId = useToolStore((state) => state.activeMarkerId);
+  const categories = useMarkerStore((state) => state.markers);
+  const addCategory = useMarkerStore((state) => state.addCategory);
+  const updateCategory = useMarkerStore((state) => state.updateCategory);
+  const removeCategory = useMarkerStore((state) => state.removeCategory);
 
   return (
     <div
@@ -50,7 +28,7 @@ export function MarkerSet({
           Marker Set
         </h3>
         <Plus size={20}
-          onClick={onAddCategory}
+          onClick={() => addCategory({ name: 'New Category', color: 'slate-600' })}
           className="transition p-1 rounded cursor-pointer   text-neutral-200 bg-neutral-800 
             hover:text-white hover:bg-neutral-700 "
         >
@@ -58,19 +36,16 @@ export function MarkerSet({
       </div>
 
       <div className="flex flex-col p-4 gap-3 overflow-x-visible overflow-y-auto  ">
-        {categories.map((cat) => {
+        {Object.entries(categories).map(([id, cat]) => {
           const isSelected =
-            tool.type === 'marker' && tool.categoryId === cat.id;
-          const isEditingName = editingNameId === cat.id;
-          const isEditingColor = editingColorId === cat.id;
+            tool === 'marker' && categoryId === id;
 
           return (
             <div
-              key={cat.id}
+              key={id}
               className={clsx(
                 'rounded-l-full transition-all select-none',
-                isSelected ? '-translate-x-2 border-white border-2' : 'hover:-translate-x-1',
-                isEditingColor ? 'mb-12 z-20' : ''
+                isSelected ? '-translate-x-2 border-white border-2' : 'hover:-translate-x-1'
               )}
             >
               <div
@@ -84,32 +59,26 @@ export function MarkerSet({
                     'w-10 h-full flex-none rounded-l-full relative cursor-pointer inset-shadow hover:brightness-110',
                     `bg-${cat.color}`
                   )}
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    onSelectCategory(cat.id);
-                    onToggleColorPicker(cat.id);
-                  }}
-
                 >
                 </div>
 
                 {/* BODY */}
                 <div
                   onClick={() => {
-                    onSelectCategory(cat.id);
+                    setTool('marker', id);
                   }}
                   className="group flex-1 h-full flex items-center px-3 relative rounded-r-md cursor-pointer 
                       bg-zinc-800 hover:bg-zinc-700
                       transition"
                 >
-                  <SpanInput id={cat.id} defaultValue={cat.name} onSave={(newName) => onSaveName(cat.id, newName)}
+                  <SpanInput id={id} defaultValue={cat.name} onSave={(newName) => updateCategory(id, newName, cat.color)}
                    className="text-zinc-500 text-sm p-1
                    hover:bg-zinc-800 
                    focus:bg-zinc-900
                    transition-colors" />
                   <div
                     className="ml-auto p-1 rounded flex items-center gap-1 opacity-0 group-hover:opacity-100 transition cursor-pointer"
-                    onClick={(e) => onDeleteCategory(cat.id, e)}
+                    onClick={() => removeCategory(id)}
                   >
                     <X size={12} className="text-zinc-300 hover:text-red-600" />
                   </div>
@@ -117,7 +86,7 @@ export function MarkerSet({
               </div>
 
               {/* Color Picker Dropdown */}
-              {isEditingColor && (
+              {/* {isEditingColor && (
                 <div
                   className="absolute top-full left-0 mt-2 p-2 rounded-lg shadow-xl z-30 flex flex-wrap gap-1 w-48 animate-in fade-in zoom-in-95 duration-100
                   bg-secondary border border-white/10"
@@ -137,7 +106,7 @@ export function MarkerSet({
                     />
                   ))}
                 </div>
-              )}
+              )} */}
             </div>
           );
         })}
