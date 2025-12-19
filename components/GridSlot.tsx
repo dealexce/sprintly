@@ -1,11 +1,9 @@
-
 import React from 'react';
 import { clsx } from 'clsx';
 import { useToolStore } from '@/stores/toolStore';
 import { useMarkerStore } from '@/stores/markerStore';
 import { useGridStore } from '@/stores/gridStore';
 import { getOffset } from '@/utils/gridOperations';
-import a from '@/dist/dev/server/chunks/ssr/node_modules_next_dist_09da2d2d._';
 
 export const GridSlot = ({hour, seg}: {hour: number, seg: number}) => {
   const slotRef = React.useRef<HTMLDivElement>(null);
@@ -38,7 +36,6 @@ export const GridSlot = ({hour, seg}: {hour: number, seg: number}) => {
       ref={slotRef}
       className={clsx(
         "flex-1 relative group select-none",
-        isEnd && "border-r",
         (!category || isEraserActive) && "transition-colors",
         !category && activeMarkerId && `hover:bg-${activeMarker?.color} hover:bg-opacity-30`
       )}

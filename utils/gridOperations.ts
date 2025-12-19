@@ -1,5 +1,3 @@
-import { TimeSlotData, Tool } from '../types';
-
 function positiveMod(n: number, mod: number): number {
     return ((n % mod) + mod) % mod;
 }

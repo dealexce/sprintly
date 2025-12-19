@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { Plus, X } from 'lucide-react';
 import { clsx } from 'clsx';
 import SpanInput from './common/SpanInput';
@@ -72,10 +72,10 @@ export function MarkerSet() {
                       transition"
                 >
                   <SpanInput id={id} defaultValue={cat.name} onSave={(newName) => updateCategory(id, newName, cat.color)}
-                   className="text-zinc-500 text-sm p-1
+                   className={clsx(`text-${cat.color}`, `text-xs p-1 font-mono
                    hover:bg-zinc-800 
                    focus:bg-zinc-900
-                   transition-colors" />
+                   transition-colors`)}/>
                   <div
                     className="ml-auto p-1 rounded flex items-center gap-1 opacity-0 group-hover:opacity-100 transition cursor-pointer"
                     onClick={() => removeCategory(id)}
