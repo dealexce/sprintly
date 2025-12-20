@@ -1,5 +1,6 @@
 import { create } from 'zustand';
 import { immer } from 'zustand/middleware/immer';
+import { persist } from 'zustand/middleware';
 
 export interface Todo {
   text: string;
@@ -17,7 +18,7 @@ export interface TodoActions {
     removeTodo: (id: string) => void;
 }
 
-export const useTodoStore = create<TodoState & TodoActions>()(immer((set) => ({
+export const useTodoStore = create<TodoState & TodoActions>()(persist(immer((set) => ({
     todos: {},
     addTodo: (todo) => set((state) => {
         state.todos[crypto.randomUUID()] = todo;
@@ -31,4 +32,6 @@ export const useTodoStore = create<TodoState & TodoActions>()(immer((set) => ({
     removeTodo: (id) => set((state) => {
         delete state.todos[id];
     }),
-})));
+})), {
+    name: 'todo-storage',
+}));

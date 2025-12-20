@@ -1,5 +1,6 @@
 import { create } from 'zustand';
 import { immer } from 'zustand/middleware/immer';
+import { persist } from 'zustand/middleware';
 
 export const GRID_INFO = {
     START_HOUR: 0,
@@ -31,12 +32,14 @@ const initialGrid: TimeSlotData[][] = Array.from({ length: hours }, (_, i) => (
     }))
 ));
 
-export const useGridStore = create<GridState & GridActions>()(immer((set) => ({
+export const useGridStore = create<GridState & GridActions>()(persist(
+    immer((set) => ({
         grid: initialGrid,
         updateGridSlot: (hour, seg, data) => set((state) => {
-            state.grid[hour][seg] = { ...state.grid[hour][seg], ...data }; 
-            // DEBUG
-            console.log(`Updated slot [${hour}][${seg}]:`, state.grid[hour][seg]);
+            state.grid[hour][seg] = { ...state.grid[hour][seg], ...data };
         }),
         resetGrid: () => set(() => ({ grid: initialGrid })),
-    })));
+    })), {
+        name: 'grid-storage'
+    }
+));

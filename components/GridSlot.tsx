@@ -36,8 +36,7 @@ export const GridSlot = ({hour, seg}: {hour: number, seg: number}) => {
       ref={slotRef}
       className={clsx(
         "flex-1 relative group select-none",
-        (!category || isEraserActive) && "transition-colors",
-        !category && activeMarkerId && `hover:bg-${activeMarker?.color} hover:bg-opacity-30`
+        !category && activeMarkerId && `hover:bg-${activeMarker?.color} hover:bg-opacity-30 transition-colors`
       )}
       onMouseDown={() => { paintSlot(); }}
       onMouseOver={(e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
@@ -52,7 +51,7 @@ export const GridSlot = ({hour, seg}: {hour: number, seg: number}) => {
              "absolute inset-y-1 inset-x-0 shadow-sm pointer-events-none transition-all duration-200",
              `bg-${category.color}`,
              isStart && "rounded-l-md left-0.5",
-             isEnd && "rounded-r-md right-0.5"
+             isEnd && "rounded-r-md right-0.5",
          )}
          >
          </div>

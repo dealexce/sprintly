@@ -1,5 +1,6 @@
 import { create } from 'zustand';
 import { immer } from 'zustand/middleware/immer';
+import { persist } from 'zustand/middleware';
 
 export interface Category {
     name: string;
@@ -21,12 +22,15 @@ interface MarkerStore {
     removeCategory: (id: string) => void;
 }
 
-export const useMarkerStore = create<MarkerStore>()(immer((set) => ({
-    markers: INITIAL_CATEGORIES,
-    addCategory: (category) => set((state) => { state.markers[crypto.randomUUID()] = category }),
-    updateCategory: (id, name, color) => set((state) => {
-        state.markers[id].name = name;
-        state.markers[id].color = color;
-    }),
-    removeCategory: (id) => set((state) => { delete state.markers[id] }),
-})));
+export const useMarkerStore = create<MarkerStore>()(persist(
+    immer((set) => ({
+        markers: INITIAL_CATEGORIES,
+        addCategory: (category) => set((state) => { state.markers[crypto.randomUUID()] = category }),
+        updateCategory: (id, name, color) => set((state) => {
+            state.markers[id].name = name;
+            state.markers[id].color = color;
+        }),
+        removeCategory: (id) => set((state) => { delete state.markers[id] }),
+    })), {
+    name: 'marker-storage',
+}));

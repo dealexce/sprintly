@@ -1,11 +1,25 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Plus, X } from 'lucide-react';
 import { clsx } from 'clsx';
 import SpanInput from './common/SpanInput';
 import { useToolStore } from '@/stores/toolStore';
 import { useMarkerStore } from '@/stores/markerStore';
 
+const MARKER_COLORS = [
+  'red-500',
+  'orange-500',
+  'amber-500',
+  'green-500',
+  'emerald-500',
+  'blue-500',
+  'indigo-500',
+  'purple-500',
+  'pink-500',
+  'slate-600'
+];
+
 export function MarkerSet() {
+  const [editingColorId, setEditingColorId] = useState<string | null>(null);
 
   const tool = useToolStore((state) => state.activeTool);
   const setTool = useToolStore((state) => state.setTool);
@@ -44,8 +58,9 @@ export function MarkerSet() {
             <div
               key={id}
               className={clsx(
-                'rounded-l-full transition-all select-none',
-                isSelected ? '-translate-x-2 border-white border-2' : 'hover:-translate-x-1'
+                'rounded-l-full transition-all select-none relative z-10',
+                isSelected ? '-translate-x-2 border-white border-2' : 'hover:-translate-x-1',
+                editingColorId === id && 'z-50'
               )}
             >
               <div
@@ -55,6 +70,10 @@ export function MarkerSet() {
               >
                 {/* TIP */}
                 <div
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setEditingColorId(editingColorId === id ? null : id);
+                  }}
                   className={clsx(
                     'w-10 h-full flex-none rounded-l-full relative cursor-pointer inset-shadow hover:brightness-110',
                     `bg-${cat.color}`
@@ -86,27 +105,27 @@ export function MarkerSet() {
               </div>
 
               {/* Color Picker Dropdown */}
-              {/* {isEditingColor && (
-                <div
-                  className="absolute top-full left-0 mt-2 p-2 rounded-lg shadow-xl z-30 flex flex-wrap gap-1 w-48 animate-in fade-in zoom-in-95 duration-100
-                  bg-secondary border border-white/10"
+              <div
+                  className={clsx(`absolute mt-2 p-3 rounded-lg flex flex-wrap gap-2 w-48 z-50
+                  transition-all transition-discrete duration-300
+                  bg-zinc-800 border border-white/20`,
+                  editingColorId === id ? 'opacity-100' : 'opacity-0')}
                 >
                   {MARKER_COLORS.map((color) => (
                     <button
                       key={color}
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        onSelectColor(cat.id, color);
+                      onClick={() => {
+                        updateCategory(id, cat.name, color);
+                        setEditingColorId(null);
                       }}
                       className={clsx(
-                        'w-5 h-5 rounded-full border border-white/10 hover:scale-110 transition-transform',
+                        'w-6 h-6 rounded-full border-2 hover:scale-110 transition-transform',
                         `bg-${color}`,
-                        cat.color === color && 'ring-2 ring-white'
+                        cat.color === color ? 'border-white' : 'border-white/30'
                       )}
                     />
                   ))}
                 </div>
-              )} */}
             </div>
           );
         })}
