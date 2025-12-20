@@ -48,6 +48,7 @@ export function TimeColumn({
         const currentTime = dayjs();
         return (
           <div 
+            key={hour}
             className="flex-1 flex min-h-2 border-b"
           >
             {/* Time Label */}
