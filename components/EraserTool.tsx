@@ -9,7 +9,7 @@ export function EraserTool() {
   return (
     <div className="h-14 flex justify-center items-center relative perspective-500 shrink-0">
       <button
-        onClick={() => setTool('eraser', null)}
+        onClick={() => activeTool === 'eraser' ? setTool(null, null) : setTool('eraser', null)}
         className={clsx(`w-60 h-10 cursor-pointer transform transition-all flex
         bg-rose-400`,
         activeTool === 'eraser' ? 

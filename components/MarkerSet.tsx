@@ -21,10 +21,10 @@ const MARKER_COLORS = [
 export function MarkerSet() {
   const [editingColorId, setEditingColorId] = useState<string | null>(null);
 
-  const tool = useToolStore((state) => state.activeTool);
+  const activeTool = useToolStore((state) => state.activeTool);
   const setTool = useToolStore((state) => state.setTool);
-  const categoryId = useToolStore((state) => state.activeMarkerId);
-  const categories = useMarkerStore((state) => state.markers);
+  const activeMarkerId = useToolStore((state) => state.activeMarkerId);
+  const markers = useMarkerStore((state) => state.markers);
   const addCategory = useMarkerStore((state) => state.addCategory);
   const updateCategory = useMarkerStore((state) => state.updateCategory);
   const removeCategory = useMarkerStore((state) => state.removeCategory);
@@ -50,9 +50,9 @@ export function MarkerSet() {
       </div>
 
       <div className="flex flex-col p-4 gap-3 overflow-x-visible overflow-y-auto  ">
-        {Object.entries(categories).map(([id, cat]) => {
+        {Object.entries(markers).map(([id, cat]) => {
           const isSelected =
-            tool === 'marker' && categoryId === id;
+            activeTool === 'marker' && activeMarkerId === id;
 
           return (
             <div
@@ -84,6 +84,8 @@ export function MarkerSet() {
                 {/* BODY */}
                 <div
                   onClick={() => {
+                    activeTool === 'marker' && activeMarkerId === id ?
+                    setTool(null, null) :
                     setTool('marker', id);
                   }}
                   className="group flex-1 h-full flex items-center px-3 relative rounded-r-md cursor-pointer 

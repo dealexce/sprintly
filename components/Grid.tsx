@@ -9,10 +9,10 @@ export function TimeGrid() {
 
   return (
     <div className="flex-1 flex">
-      <TimeColumn
+      <GridColumn
           hours={amHours}
       />
-      <TimeColumn
+      <GridColumn
           hours={pmHours}
         />
     </div>
@@ -23,7 +23,7 @@ interface TimeColumnProps {
   hours: number[];
 }
 
-export function TimeColumn({
+export function GridColumn({
   hours }: TimeColumnProps) {
   const minutes = Array.from({ length: 60 / GRID_INFO.SLOT_INTERVAL_MINUTES }, (_, i) => i * GRID_INFO.SLOT_INTERVAL_MINUTES);
   return (
