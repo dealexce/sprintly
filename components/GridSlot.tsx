@@ -60,7 +60,7 @@ export function GridSlot({ hour, seg }: { hour: number, seg: number }) {
       }}
     >
       {marker && isStart && (
-        <span className="m-1 text-xs font-mono text-white/80 uppercase truncate max-w-[90%] z-10">
+        <span className="m-1 font-mono text-white/80 uppercase truncate max-w-[90%] z-10 pointer-events-none">
           {marker.name}
         </span>
       )}
@@ -71,7 +71,7 @@ export function GridSlot({ hour, seg }: { hour: number, seg: number }) {
           <div
             key={index}
             className={clsx(
-              "size-fit m-1 px-1 rounded-sm bg-sticker bg-opacity-70 z-20",
+              "size-fit mx-1 mt-1 px-1 rounded-sm bg-sticker bg-opacity-70 z-20",
               isEraserActive && "hover:ring-4 hover:ring-red-400",
               todo?.completed && "line-through text-neutral-400")}
             onClick={(e) => {
