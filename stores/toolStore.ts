@@ -4,7 +4,7 @@ export type ToolType = 'marker' | 'eraser' | null;
 
 export interface Tool {
   type: ToolType;
-  categoryId: string | null; // null if eraser
+  markerId: string | null; // null if eraser
 }
 
 export interface ToolState {

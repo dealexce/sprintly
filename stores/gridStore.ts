@@ -1,6 +1,7 @@
 import { create } from 'zustand';
 import { immer } from 'zustand/middleware/immer';
 import { persist } from 'zustand/middleware';
+import { ToolType } from './toolStore';
 
 export const GRID_INFO = {
     START_HOUR: 0,
@@ -18,7 +19,9 @@ export interface GridState {
 }
 
 export interface GridActions {
-    updateGridSlot: (hour: number, seg: number, data: Partial<TimeSlotData>) => void;
+    updateGridSlot: (hour: number, seg: number, activeTool: ToolType, activeMarkerId: string | null) => void;
+    addTodoToSlot: (hour: number, seg: number, todoId: string) => void;
+    removeTodoFromSlot: (hour: number, seg: number, todoId: string) => void;
     resetGrid: () => void;
 }
 
@@ -35,8 +38,20 @@ const initialGrid: TimeSlotData[][] = Array.from({ length: hours }, (_, i) => (
 export const useGridStore = create<GridState & GridActions>()(persist(
     immer((set) => ({
         grid: initialGrid,
-        updateGridSlot: (hour, seg, data) => set((state) => {
-            state.grid[hour][seg] = { ...state.grid[hour][seg], ...data };
+        updateGridSlot: (hour, seg, activeTool: ToolType, activeMarkerId: string | null) => set((state) => {
+            if (activeTool === 'eraser') {
+                state.grid[hour][seg].markerId = null;
+            } else if (activeTool === 'marker' && activeMarkerId) {
+                state.grid[hour][seg].markerId = activeMarkerId;
+            }
+        }),
+        addTodoToSlot: (hour, seg, todoId) => set((state) => {
+            if (!state.grid[hour][seg].todoIds.includes(todoId)) {
+                state.grid[hour][seg].todoIds.push(todoId);
+            }
+        }),
+        removeTodoFromSlot: (hour, seg, todoId) => set((state) => {
+            state.grid[hour][seg].todoIds = state.grid[hour][seg].todoIds.filter(id => id !== todoId);
         }),
         resetGrid: () => set(() => ({ grid: initialGrid })),
     })), {

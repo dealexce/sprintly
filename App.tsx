@@ -6,12 +6,29 @@ import { TimeGrid } from './components/Grid';
 import { TodoPanel } from './components/TodoPanel';
 import { EraserTool } from './components/EraserTool';
 import { MarkerSet } from './components/MarkerSet';
+// Stores
+import { useGridStore } from './stores/gridStore';
+// Libraries
 import dayjs from 'dayjs';
+import { DragDropProvider } from '@dnd-kit/react';
 
 export default function App() {
-
+  const addTodoToSlot = useGridStore((state) => state.addTodoToSlot);
   return (
-      <div
+    <DragDropProvider
+      onDragEnd={(event) => {
+        const { source, target } = event.operation;
+        if (source?.type === 'todo' && target?.type === 'slot') {
+          console.log('Dropping ', source, ' into ', target);
+          addTodoToSlot(
+            target.data.hour,
+            target.data.seg,
+            source.data.id
+          );
+        }
+      }}
+    >
+      <div 
         className="flex h-screen w-screen overflow-hidden 
         gap-8 p-4 items-center justify-center relative
         bg-neutral-800"
@@ -21,18 +38,19 @@ export default function App() {
           <HeaderSection title="sprintly" date={dayjs().format('dddd, MMMM D')} />
           {/* Grid Content Container */}
           <div className="h-full flex-1 flex">
-              <TimeGrid />
+            <TimeGrid />
           </div>
         </div>
 
         {/* --- RIGHT PANEL: TOOLS --- */}
         <div className="h-full flex flex-col w-1/6 min-w-fit z-20 py-4 gap-4">
-          <TodoPanel/>
+          <TodoPanel />
 
-          <EraserTool/>
+          <EraserTool />
 
-          <MarkerSet/>
+          <MarkerSet />
         </div>
       </div>
+    </DragDropProvider>
   );
 }
