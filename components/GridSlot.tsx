@@ -71,9 +71,9 @@ export function GridSlot({ hour, seg }: { hour: number, seg: number }) {
           <div
             key={index}
             className={clsx(
-              "size-fit mx-1 mt-1 px-1 rounded-sm bg-sticker bg-opacity-70 z-20",
+              "size-fit mx-1 mt-1 px-1 rounded-sm bg-sticker font-hand text-secondary/70 bg-opacity-70 z-10",
               isEraserActive && "hover:ring-4 hover:ring-red-400",
-              todo?.completed && "line-through text-neutral-400")}
+              todo?.completed && "line-through text-neutral-400 opacity-50")}
             onClick={(e) => {
               e.stopPropagation();
               removeTodoFromSlot(hour, seg, todoId);
