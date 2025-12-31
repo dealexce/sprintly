@@ -2,7 +2,7 @@ import React from "react";
 import { clsx } from "clsx";
 
 import { useDroppable } from "@dnd-kit/react";
-import { useTodoStore } from "@/stores/todoStore";
+import { Todo, useTodoStore } from "@/stores/todoStore";
 import { useToolStore } from "@/stores/toolStore";
 import { useMarkerStore } from "@/stores/markerStore";
 import { useGridStore } from "@/stores/gridStore";
@@ -38,7 +38,8 @@ export function GridSlot({ hour, seg }: { hour: number; seg: number }) {
         getOffset(state.grid, hour, seg, 1)?.markerId !== slot.markerId
     )
   );
-  const updateGridSlot = useGridStore((state) => state.updateGridSlot);
+  const updateGridSlotMarker = useGridStore((state) => state.updateGridSlot);
+  const eraseGridSlot = useGridStore((state) => state.eraseGridSlot);
   const removeTodoFromSlot = useGridStore((state) => state.removeTodoFromSlot);
 
   // DnD
@@ -50,12 +51,12 @@ export function GridSlot({ hour, seg }: { hour: number; seg: number }) {
 
   function PaintGrid() {
     if (isEraserActive || !activeMarkerId) return;
-    updateGridSlot(hour, seg, activeTool, activeMarkerId);
+    updateGridSlotMarker(hour, seg, activeMarkerId);
   }
 
   function EraseGrid() {
     if (!isEraserActive) return;
-    updateGridSlot(hour, seg, activeTool, null);
+    eraseGridSlot(hour, seg);
   }
 
   return (
@@ -64,8 +65,7 @@ export function GridSlot({ hour, seg }: { hour: number; seg: number }) {
         "flex flex-wrap flex-1 relative select-none p-1",
         !marker &&
           activeMarkerId &&
-          `hover:bg-${activeMarker?.color} hover:bg-opacity-30 transition-colors`,
-        isDropTarget && "ring-4 ring-green-400"
+          `hover:bg-${activeMarker?.color} hover:bg-opacity-30 transition-colors`
       )}
       ref={ref}
       onMouseDown={() => {
@@ -85,32 +85,22 @@ export function GridSlot({ hour, seg }: { hour: number; seg: number }) {
       {slot.todoIds.map((todoId, index) => {
         const todo = todos[todoId];
         if (!todo) return null;
-        return (
-          <div
-            key={index}
-            className={clsx(
-              "size-fit mx-1 mt-1 px-1 rounded-sm bg-sticker font-hand text-secondary/70 bg-opacity-70 z-10",
-              isEraserActive && "hover:ring-4 hover:ring-red-400",
-              todo?.completed && "line-through text-neutral-400 opacity-50"
-            )}
-            onClick={(e) => {
-              e.stopPropagation();
-              removeTodoFromSlot(hour, seg, todoId);
-            }}
-          >
-            {todo?.text}
-          </div>
-        );
+        return TodoTag(index, todo, todoId);
       })}
       {/* The Colored Ink Block */}
       {marker && (
         <div
           className={clsx(
-            "absolute inset-x-0 inset-y-1 transition-all duration-200 z-0",
+            "absolute inset-x-0 inset-y-1 transition-all duration-200 z-0 ",
             `bg-${marker.color}`,
             isStart && "rounded-l-md left-0.5",
             isEnd && "rounded-r-md right-0.5",
-            isEraserActive && "hover:opacity-50"
+            isEraserActive &&
+              `hover:bg-${marker.color}/70 hover:rounded-md hover:z-10 hover:scale-95`,
+            activeMarker &&
+              activeMarkerId !== slot.markerId &&
+              `hover:bg-${activeMarker.color}/70 hover:rounded-lg hover:shadow-md hover:z-10 hover:scale-95`,
+            isDropTarget && `scale-105 shadow-lg rounded-md`
           )}
           onMouseDown={() => {
             EraseGrid();
@@ -124,4 +114,25 @@ export function GridSlot({ hour, seg }: { hour: number; seg: number }) {
       )}
     </div>
   );
+
+  function TodoTag(index: number, todo: Todo, todoId: string) {
+    return (
+      <div
+        key={index}
+        className={clsx(
+          `size-fit mx-1 mt-1 px-1 rounded-sm bg-sticker font-hand text-secondary/70 z-20 
+        transition-all`,
+          isEraserActive &&
+            "hover:bg-sticker/70 hover:shadow-sm hover:scale-95",
+          todo?.completed && "line-through text-neutral-400 opacity-50"
+        )}
+        onClick={(e) => {
+          e.stopPropagation();
+          removeTodoFromSlot(hour, seg, todoId);
+        }}
+      >
+        {todo?.text}
+      </div>
+    );
+  }
 }

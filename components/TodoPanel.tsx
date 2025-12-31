@@ -56,7 +56,7 @@ function TodoItem({ id }) {
   );
   const removeTodo = useTodoStore((state) => state.removeTodo);
   // DnD
-  const { ref } = useDraggable({
+  const { ref, isDragging } = useDraggable({
     id: id,
     type: "todo",
     data: { id },
@@ -66,8 +66,11 @@ function TodoItem({ id }) {
     <div
       key={id}
       ref={ref}
-      className={`group flex items-start gap-2 p-2 mb-2 border-b border-dotted bg-sticker
-                hover:bg-black/5 transition-colors`}
+      className={clsx(
+        `group flex items-start gap-2 p-2 mb-2 border-b border-dotted bg-sticker transition-all
+                hover:shadow-md`,
+        isDragging && "scale-90 shadow-md"
+      )}
     >
       <button
         className="cursor-pointer"

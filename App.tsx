@@ -19,7 +19,6 @@ export default function App() {
       onDragEnd={(event) => {
         const { source, target } = event.operation;
         if (source?.type === "todo" && target?.type === "slot") {
-          console.log("Dropping ", source, " into ", target);
           addTodoToSlot(target.data.hour, target.data.seg, source.data.id);
         }
       }}
@@ -42,7 +41,7 @@ export default function App() {
         </div>
 
         {/* --- RIGHT PANEL: TOOLS --- */}
-        <div className="h-full flex flex-col w-1/6 min-w-fit z-20 py-4 gap-4">
+        <div className="h-full flex flex-col w-1/6 min-w-fit z-20 py-4 gap-4 ">
           <TodoPanel />
 
           <EraserTool />
