@@ -1,35 +1,51 @@
-import React from 'react';
-import { clsx } from 'clsx';
+import React from "react";
+import { clsx } from "clsx";
 
-import { useDroppable } from '@dnd-kit/react';
-import { useTodoStore } from '@/stores/todoStore';
-import { useToolStore } from '@/stores/toolStore';
-import { useMarkerStore } from '@/stores/markerStore';
-import { useGridStore } from '@/stores/gridStore';
-import { getOffset } from '@/utils/gridOperations';
-import { useShallow } from 'zustand/shallow';
+import { useDroppable } from "@dnd-kit/react";
+import { useTodoStore } from "@/stores/todoStore";
+import { useToolStore } from "@/stores/toolStore";
+import { useMarkerStore } from "@/stores/markerStore";
+import { useGridStore } from "@/stores/gridStore";
+import { getOffset } from "@/utils/gridOperations";
+import { useShallow } from "zustand/shallow";
 
-export function GridSlot({ hour, seg }: { hour: number, seg: number }) {
+export function GridSlot({ hour, seg }: { hour: number; seg: number }) {
   // State Stores
   const activeTool = useToolStore((state) => state.activeTool);
-  const isEraserActive = activeTool === 'eraser';
+  const isEraserActive = activeTool === "eraser";
   const activeMarkerId = useToolStore((state) => state.activeMarkerId);
-  const activeMarker = useMarkerStore(useShallow((state) => activeMarkerId ? state.markers[activeMarkerId] : null));
+  const activeMarker = useMarkerStore(
+    useShallow((state) =>
+      activeMarkerId ? state.markers[activeMarkerId] : null
+    )
+  );
   const slot = useGridStore(useShallow((state) => state.grid[hour][seg]));
-  const marker = useMarkerStore(useShallow((state) => slot.markerId ? state.markers[slot.markerId] : null));
+  const marker = useMarkerStore(
+    useShallow((state) => (slot.markerId ? state.markers[slot.markerId] : null))
+  );
   const todos = useTodoStore((state) => state.todos);
-  const isStart = useGridStore(useShallow((state) => slot.markerId !== null &&
-    getOffset(state.grid, hour, seg, -1)?.markerId !== slot.markerId));
-  const isEnd = useGridStore(useShallow((state) => slot.markerId !== null &&
-    getOffset(state.grid, hour, seg, 1)?.markerId !== slot.markerId));
+  const isStart = useGridStore(
+    useShallow(
+      (state) =>
+        slot.markerId !== null &&
+        getOffset(state.grid, hour, seg, -1)?.markerId !== slot.markerId
+    )
+  );
+  const isEnd = useGridStore(
+    useShallow(
+      (state) =>
+        slot.markerId !== null &&
+        getOffset(state.grid, hour, seg, 1)?.markerId !== slot.markerId
+    )
+  );
   const updateGridSlot = useGridStore((state) => state.updateGridSlot);
   const removeTodoFromSlot = useGridStore((state) => state.removeTodoFromSlot);
 
   // DnD
   const { isDropTarget, ref } = useDroppable({
     id: `grid-slot-${hour}-${seg}`,
-    type: 'slot',
-    data: { hour, seg }
+    type: "slot",
+    data: { hour, seg },
   });
 
   function PaintGrid() {
@@ -46,8 +62,10 @@ export function GridSlot({ hour, seg }: { hour: number, seg: number }) {
     <div
       className={clsx(
         "flex flex-wrap flex-1 relative select-none p-1",
-        !marker && activeMarkerId && `hover:bg-${activeMarker?.color} hover:bg-opacity-30 transition-colors`,
-        isDropTarget && "ring-4 ring-green-400",
+        !marker &&
+          activeMarkerId &&
+          `hover:bg-${activeMarker?.color} hover:bg-opacity-30 transition-colors`,
+        isDropTarget && "ring-4 ring-green-400"
       )}
       ref={ref}
       onMouseDown={() => {
@@ -73,16 +91,16 @@ export function GridSlot({ hour, seg }: { hour: number, seg: number }) {
             className={clsx(
               "size-fit mx-1 mt-1 px-1 rounded-sm bg-sticker font-hand text-secondary/70 bg-opacity-70 z-10",
               isEraserActive && "hover:ring-4 hover:ring-red-400",
-              todo?.completed && "line-through text-neutral-400 opacity-50")}
+              todo?.completed && "line-through text-neutral-400 opacity-50"
+            )}
             onClick={(e) => {
               e.stopPropagation();
               removeTodoFromSlot(hour, seg, todoId);
-            }
-            }
+            }}
           >
             {todo?.text}
           </div>
-        )
+        );
       })}
       {/* The Colored Ink Block */}
       {marker && (
@@ -102,10 +120,8 @@ export function GridSlot({ hour, seg }: { hour: number, seg: number }) {
             if (e.buttons !== 1) return;
             EraseGrid();
           }}
-        >
-        </div>
+        ></div>
       )}
-
     </div>
   );
-};
+}

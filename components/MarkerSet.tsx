@@ -85,18 +85,18 @@ export function MarkerSet() {
                 <div
                   onClick={() => {
                     activeTool === 'marker' && activeMarkerId === id ?
-                    setTool(null, null) :
-                    setTool('marker', id);
+                      setTool(null, null) :
+                      setTool('marker', id);
                   }}
                   className="group flex-1 h-full flex items-center px-3 relative rounded-r-md cursor-pointer 
                       bg-zinc-800 hover:bg-zinc-700
                       transition"
                 >
                   <SpanInput id={id} defaultValue={cat.name} onSave={(newName) => updateCategory(id, newName, cat.color)}
-                   className={clsx(`text-${cat.color}`, `text-xs p-1 font-mono
+                    className={clsx(`text-${cat.color}`, `text-xs p-1 font-mono
                    hover:bg-zinc-800 
                    focus:bg-zinc-900
-                   transition-colors`)}/>
+                   transition-colors`)} />
                   <div
                     className="ml-auto p-1 rounded flex items-center gap-1 opacity-0 group-hover:opacity-100 transition cursor-pointer"
                     onClick={() => removeCategory(id)}
@@ -108,26 +108,26 @@ export function MarkerSet() {
 
               {/* Color Picker Dropdown */}
               <div
-                  className={clsx(`absolute mt-2 p-3 rounded-lg flex flex-wrap gap-2 w-48 z-50
+                className={clsx(`absolute mt-2 p-3 rounded-lg flex flex-wrap gap-2 w-48 z-50
                   transition-all transition-discrete duration-300
                   bg-zinc-800 border border-white/20`,
                   editingColorId === id ? 'opacity-100' : 'opacity-0')}
-                >
-                  {MARKER_COLORS.map((color) => (
-                    <button
-                      key={color}
-                      onClick={() => {
-                        updateCategory(id, cat.name, color);
-                        setEditingColorId(null);
-                      }}
-                      className={clsx(
-                        'w-6 h-6 rounded-full border-2 hover:scale-110 transition-transform',
-                        `bg-${color}`,
-                        cat.color === color ? 'border-white' : 'border-white/30'
-                      )}
-                    />
-                  ))}
-                </div>
+              >
+                {MARKER_COLORS.map((color) => (
+                  <button
+                    key={color}
+                    onClick={() => {
+                      updateCategory(id, cat.name, color);
+                      setEditingColorId(null);
+                    }}
+                    className={clsx(
+                      'w-6 h-6 rounded-full border-2 hover:scale-110 transition-transform',
+                      `bg-${color}`,
+                      cat.color === color ? 'border-white' : 'border-white/30'
+                    )}
+                  />
+                ))}
+              </div>
             </div>
           );
         })}

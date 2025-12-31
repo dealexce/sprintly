@@ -1,7 +1,7 @@
-import React from 'react';
-import { GRID_INFO } from '@/stores/gridStore';
-import { GridSlot } from './GridSlot';
-import dayjs from 'dayjs';
+import React from "react";
+import { GRID_INFO } from "@/stores/gridStore";
+import { GridSlot } from "./GridSlot";
+import dayjs from "dayjs";
 
 export function TimeGrid() {
   const amHours = Array.from({ length: 12 }, (_, i) => i);
@@ -9,12 +9,8 @@ export function TimeGrid() {
 
   return (
     <div className="flex-1 flex">
-      <GridColumn
-          hours={amHours}
-      />
-      <GridColumn
-          hours={pmHours}
-        />
+      <GridColumn hours={amHours} />
+      <GridColumn hours={pmHours} />
     </div>
   );
 }
@@ -23,9 +19,11 @@ interface TimeColumnProps {
   hours: number[];
 }
 
-export function GridColumn({
-  hours }: TimeColumnProps) {
-  const minutes = Array.from({ length: 60 / GRID_INFO.SLOT_INTERVAL_MINUTES }, (_, i) => i * GRID_INFO.SLOT_INTERVAL_MINUTES);
+export function GridColumn({ hours }: TimeColumnProps) {
+  const minutes = Array.from(
+    { length: 60 / GRID_INFO.SLOT_INTERVAL_MINUTES },
+    (_, i) => i * GRID_INFO.SLOT_INTERVAL_MINUTES
+  );
   return (
     <div className="flex-1 flex flex-col relative text-neutral-400 text-[10px] font-mono">
       {/* Column Headers (Minutes) */}
@@ -34,11 +32,8 @@ export function GridColumn({
         <div className="w-12 border-r" />
         {/* Minute Labels */}
         {minutes.map((min) => (
-          <div
-            key={min}
-            className="flex-1 text-center py-1 border-r"
-          >
-            :{min.toString().padStart(2, '0')}
+          <div key={min} className="flex-1 text-center py-1 border-r">
+            :{min.toString().padStart(2, "0")}
           </div>
         ))}
       </div>
@@ -47,10 +42,7 @@ export function GridColumn({
       {hours.map((hour) => {
         const currentTime = dayjs();
         return (
-          <div 
-            key={hour}
-            className="flex-1 flex min-h-2 border-b"
-          >
+          <div key={hour} className="flex-1 flex min-h-2 border-b">
             {/* Time Label */}
             <div className="w-12 flex items-center justify-center bg-neutral-50">
               {hour}
@@ -59,13 +51,11 @@ export function GridColumn({
             {/* Slot Container */}
             <div className="flex-1 flex relative">
               {minutes.map((_, seg) => {
-                return (
-                  <GridSlot hour={hour} seg={seg} />
-                );
+                return <GridSlot hour={hour} seg={seg} />;
               })}
 
               {/* Vertical Time Cursor */}
-              { currentTime.hour() === hour && (
+              {currentTime.hour() === hour && (
                 <div
                   className="absolute top-0 bottom-0 z-40 pointer-events-none"
                   style={{
